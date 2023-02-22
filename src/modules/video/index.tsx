@@ -9,7 +9,7 @@ const Video = () => {
 
   const _renderItem = ({item}: any) => {
     console.log('item', item?.thumb);
-    return <CustomCard videoTitle={item?.title} source={0} />;
+    return <CustomCard videoTitle={item?.title} source={{uri: item?.thumb}} />;
   };
   return (
     <View style={{flex: 1}}>

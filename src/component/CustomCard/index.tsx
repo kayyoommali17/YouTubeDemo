@@ -18,10 +18,10 @@ interface Props {
 }
 const CustomCard = (props: Props) => {
   return (
-    <TouchableOpacity style={styles.cardTouchStyle}>
+    <TouchableOpacity activeOpacity={0.7} style={styles.cardTouchStyle}>
       <Image
         style={styles.cardImageStyle}
-        source={props.source || localeImage.happyWomen}
+        source={props?.source || localeImage.happyWomen}
       />
       <Text style={styles.videoTitleStyle}>
         {props.videoTitle || 'How to make yourself happy?'}
@@ -46,7 +46,7 @@ export default CustomCard;
 
 const styles = StyleSheet.create({
   cardTouchStyle: {
-    marginVertical: vh(20),
+    marginVertical: vh(10),
     marginHorizontal: vw(20),
     borderRadius: normalize(10),
     backgroundColor: Colors.white,
@@ -62,13 +62,16 @@ const styles = StyleSheet.create({
   cardImageStyle: {
     borderTopLeftRadius: normalize(10),
     borderTopRightRadius: normalize(10),
+    height: vw(180),
+    width: '100%',
+    resizeMode: 'cover',
   },
   videoTitleStyle: {
     fontWeight: '600',
-    fontSize: normalize(20),
-    marginVertical: normalize(10),
-    marginHorizontal: vw(15),
     color: Colors.black,
+    fontSize: normalize(20),
+    marginHorizontal: vw(15),
+    marginVertical: normalize(10),
   },
   channelInfoViewStyle: {
     flexDirection: 'row',

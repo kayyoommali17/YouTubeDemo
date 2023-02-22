@@ -43,6 +43,7 @@ const Colors = {
   blue: '#0D3559',
   searchBackgroundColor: '#F9F9F9',
   lightRed: '#F56363',
+  tabColor: '#50E2E1',
 };
 
 export default Colors;

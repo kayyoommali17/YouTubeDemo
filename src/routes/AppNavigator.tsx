@@ -14,7 +14,6 @@ function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          //   headerShown: false,
           header: () => <HeaderNavigation screenText={'Favrouites'} />,
         }}>
         <Stack.Screen name={routesNames.topTaps} component={MyTopTabs} />

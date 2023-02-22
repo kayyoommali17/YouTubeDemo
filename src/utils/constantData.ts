@@ -17,7 +17,7 @@ const data = [
 
     subtitle: 'By Blender Foundation',
     thumb:
-      'https://storage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg"',
+      'https://storage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg',
     title: 'Elephant Dream',
   },
   {
