@@ -6,6 +6,8 @@ import routesNames from '../utils/routesNames';
 import {StyleSheet, Text, View} from 'react-native';
 import {normalize} from '../utils/dimensions';
 import Colors from '../themes/colors';
+import VideoRenderScreen from '../modules/video';
+import VideoPlayer from '../modules/videoplayer';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -48,8 +50,8 @@ export default function MyTopTabs() {
         },
       })}
       initialRouteName={routesNames.videos}>
-      <Tab.Screen name={routesNames.channels} component={Channels} />
-      <Tab.Screen name={routesNames.videos} component={Video} />
+      <Tab.Screen name={routesNames.channels} component={VideoPlayer} />
+      <Tab.Screen name={routesNames.videos} component={VideoRenderScreen} />
       <Tab.Screen name={routesNames.articles} component={Articles} />
     </Tab.Navigator>
   );

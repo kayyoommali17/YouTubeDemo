@@ -8,7 +8,7 @@ const Channels = () => {
       <Text>Channels</Text>
       <Image
         resizeMode="contain"
-        style={{height: 200, width: 200}}
+        style={{height: 200, width: 200, borderWidth: 1}}
         // source={localeImage.happyWomen}
         source={{
           uri: 'https://reactnative.dev/img/tiny_logo.png',
@@ -21,7 +21,3 @@ const Channels = () => {
 export default Channels;
 
 const styles = StyleSheet.create({});
-
-// {
-//   uri: 'https://reactnative.dev/img/tiny_logo.png',
-// }

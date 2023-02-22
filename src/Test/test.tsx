@@ -1,49 +1,47 @@
-import React, {useState} from 'react';
-import {View, TouchableOpacity, Text} from 'react-native';
+import React from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 
-function CustomTabBar({state, descriptors, navigation}: any) {
-  const [selectedTab, setSelectedTab] = useState(0);
+const DATA = [
+  {id: '1', name: 'Item 1'},
+  {id: '2', name: 'Item 2'},
+  {id: '3', name: 'Item 3'},
+  {id: '4', name: 'Item 4'},
+  {id: '5', name: 'Item 5'},
+];
 
-  const handleTabPress = index => {
-    setSelectedTab(index);
-    navigation.navigate(state.routes[index].name);
-  };
+const renderItem = item => (
+  <View style={styles.itemContainer}>
+    <Text style={styles.itemText}>{item.name}</Text>
+  </View>
+);
 
+const RenderCard = () => {
   return (
-    <View style={{flexDirection: 'row', backgroundColor: 'white'}}>
-      {state.routes.map((route, index) => {
-        const {options} = descriptors[route.key];
-        const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-            ? options.title
-            : route.name;
-
-        const isFocused = selectedTab === index;
-
-        const onPress = () => {
-          handleTabPress(index);
-        };
-
-        return (
-          <TouchableOpacity
-            key={index}
-            style={{
-              flex: 1,
-              height: 50,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderBottomWidth: isFocused ? 2 : 0,
-              borderColor: 'blue',
-            }}
-            onPress={onPress}>
-            <Text style={{color: isFocused ? 'blue' : 'gray'}}>{label}</Text>
-          </TouchableOpacity>
-        );
-      })}
+    <View style={styles.container}>
+      <View style={styles.listContainer}>{DATA.map(renderItem)}</View>
     </View>
   );
-}
+};
 
-export default CustomTabBar;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  listContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+  },
+  itemContainer: {
+    backgroundColor: '#eee',
+    padding: 16,
+    marginHorizontal: 8,
+    borderRadius: 8,
+  },
+  itemText: {
+    fontSize: 16,
+  },
+});
+
+export default RenderCard;

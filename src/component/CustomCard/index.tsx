@@ -1,29 +1,40 @@
 import {
+  GestureResponderEvent,
   Image,
   ImageSourcePropType,
+  ImageStyle,
   SafeAreaView,
+  StyleProp,
   StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from 'react-native';
 import React from 'react';
-import Video from 'react-native-video';
 import localeImage from '../../utils/localeInImage';
 import {normalize, vh, vw} from '../../utils/dimensions';
 import Colors from '../../themes/colors';
 interface Props {
   videoTitle?: string;
   source: ImageSourcePropType;
+  titleStyle?: StyleProp<TextStyle>;
+  cardViewStyle?: StyleProp<ViewStyle>;
+  cardImageeStyle?: StyleProp<ImageStyle>;
+  onPress?: ((event: GestureResponderEvent) => void) | undefined;
 }
 const CustomCard = (props: Props) => {
   return (
-    <TouchableOpacity activeOpacity={0.7} style={styles.cardTouchStyle}>
+    <TouchableOpacity
+      activeOpacity={0.7}
+      onPress={props.onPress}
+      style={[styles.cardTouchStyle, props.cardViewStyle]}>
       <Image
-        style={styles.cardImageStyle}
+        style={[styles.cardImageStyle, props.cardImageeStyle]}
         source={props?.source || localeImage.happyWomen}
       />
-      <Text style={styles.videoTitleStyle}>
+      <Text style={[styles.videoTitleStyle, props.titleStyle]}>
         {props.videoTitle || 'How to make yourself happy?'}
       </Text>
       <Text style={styles.metaInfoStyle}>
@@ -38,7 +49,6 @@ const CustomCard = (props: Props) => {
         <Text style={styles.channelNameTextStyle}>{'Rachel Geller'}</Text>
       </View>
     </TouchableOpacity>
-    // </SafeAreaView>
   );
 };
 
@@ -87,8 +97,10 @@ const styles = StyleSheet.create({
     borderRadius: normalize(15),
   },
   channelNameTextStyle: {
-    marginLeft: vw(20),
+    opacity: 0.7,
+    marginLeft: vw(10),
     color: Colors.black,
+    fontSize: normalize(16),
   },
   metaInfoStyle: {
     opacity: 0.7,
