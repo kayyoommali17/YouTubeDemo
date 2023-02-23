@@ -2,7 +2,14 @@ import React from 'react';
 import Colors from '../../themes/colors';
 import localeImage from '../../utils/localeInImage';
 import {normalize, vh, vw} from '../../utils/dimensions';
-import {Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+} from 'react-native';
 
 interface Props {
   onPress?: any;
@@ -12,6 +19,7 @@ interface Props {
 const HeaderNavigation = (props: Props) => {
   return (
     <View style={styles.mainViewStyle}>
+      <SafeAreaView />
       <TouchableOpacity activeOpacity={0.7} style={styles.touchStyle}>
         <Image source={localeImage.back} style={styles.imageStyle} />
       </TouchableOpacity>
@@ -28,7 +36,7 @@ const styles = StyleSheet.create({
   mainViewStyle: {
     alignItems: 'center',
     flexDirection: 'row',
-    paddingVertical: vh(20),
+    paddingVertical: vh(10),
     paddingHorizontal: vw(20),
     backgroundColor: Colors.white,
   },

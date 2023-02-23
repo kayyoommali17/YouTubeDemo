@@ -1,21 +1,33 @@
+import React from 'react';
 import Video from '../modules/video';
+import Colors from '../themes/colors';
 import Articles from '../modules/articles';
 import Channels from '../modules/channels';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import routesNames from '../utils/routesNames';
-import {StyleSheet, Text, View} from 'react-native';
 import {normalize} from '../utils/dimensions';
-import Colors from '../themes/colors';
+import routesNames from '../utils/routesNames';
 import VideoRenderScreen from '../modules/video';
 import VideoPlayer from '../modules/videoplayer';
+import {StyleSheet, Text, View} from 'react-native';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function MyTopTabs() {
+  // const TabNavigationRef = React.useRef(null);
+  // // const dispatch=
+  // const jumpToIndex = ({route}: any) => {
+  //   if (route.name === routesNames.articles) {
+  //     TabNavigationRef.current?.dispatch({
+  //       ...TabActions.jumpTo('Third'),
+  //     });
+  //   }
+  // };
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarPressColor: Colors.white,
+        // tabBarOnPress
+
         tabBarLabel: ({focused}) => {
           return (
             <View
@@ -32,12 +44,12 @@ export default function MyTopTabs() {
                         fontWeight: 'bold',
                         textAlign: 'center',
                         color: Colors.white,
-                        fontSize: normalize(16),
+                        fontSize: normalize(14),
                       }
                     : {
                         fontWeight: 'bold',
                         color: Colors.black,
-                        fontSize: normalize(16),
+                        fontSize: normalize(14),
                       }
                 }>
                 {route.name}
@@ -48,6 +60,7 @@ export default function MyTopTabs() {
         tabBarIndicatorStyle: {
           width: 0,
         },
+        lazy: false,
       })}
       initialRouteName={routesNames.videos}>
       <Tab.Screen name={routesNames.channels} component={VideoPlayer} />
@@ -61,7 +74,7 @@ const styles = StyleSheet.create({
   tabbarStyle: {
     width: normalize(100),
     alignItems: 'center',
-    padding: normalize(10),
+    padding: normalize(5),
     borderRadius: normalize(20),
   },
 });

@@ -4,6 +4,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import CustomCard from './src/component/CustomCard';
 import CustomApp from './src/routes/AppNavigator';
 import AppNavigator from './src/routes/AppNavigator';
+import CustomVideoPlayer from './src/Test/test';
 import RenderCard from './src/Test/test';
 import CustomTabBar from './src/Test/test';
 
@@ -12,8 +13,7 @@ const App = () => {
     <SafeAreaView style={{flex: 1}}>
       <AppNavigator />
     </SafeAreaView>
-    // <CustomCard source={0} />
-    // <RenderCard />
+    // <CustomVideoPlayer />
   );
 };
 

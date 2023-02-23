@@ -1,47 +1,103 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {View, PanResponder, StyleSheet} from 'react-native';
+import Video from 'react-native-video';
 
-const DATA = [
-  {id: '1', name: 'Item 1'},
-  {id: '2', name: 'Item 2'},
-  {id: '3', name: 'Item 3'},
-  {id: '4', name: 'Item 4'},
-  {id: '5', name: 'Item 5'},
-];
+const CustomVideoPlayer = () => {
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [isSeeking, setIsSeeking] = useState(false);
+  const videoRef = useRef<any>(null);
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: (evt, gestureState) => {
+        const {width}: any = StyleSheet.flatten(styles.progressBar);
+        const position = gestureState.dx / width;
+        const time = position * duration;
+        setCurrentTime(time);
+        setIsSeeking(true);
+        videoRef.current.seek(time);
+      },
+      onPanResponderRelease: () => {
+        setIsSeeking(false);
+      },
+    }),
+  ).current;
 
-const renderItem = item => (
-  <View style={styles.itemContainer}>
-    <Text style={styles.itemText}>{item.name}</Text>
-  </View>
-);
+  const handleLoad = (meta: any) => {
+    setDuration(meta.duration);
+  };
 
-const RenderCard = () => {
+  const handleProgress = ({currentTime}: any) => {
+    if (!isSeeking) {
+      setCurrentTime(currentTime);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.listContainer}>{DATA.map(renderItem)}</View>
+      <Video
+        ref={videoRef}
+        paused={false}
+        source={{
+          uri: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+        }}
+        style={styles.videoPlayer}
+        onLoad={handleLoad}
+        onProgress={handleProgress}
+        resizeMode="contain"
+        controls
+      />
+      <View style={styles.progressBar} {...panResponder.panHandlers}>
+        <View
+          style={[
+            styles.progress,
+            {width: `${(currentTime / duration) * 100}%`},
+          ]}
+        />
+        <View
+          style={[
+            styles.seekThumb,
+            {left: `${(currentTime / duration) * 100}%`},
+          ]}
+        />
+      </View>
     </View>
   );
 };
 
+export default CustomVideoPlayer;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  listContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
+  videoPlayer: {
+    // flex: 1,
+    height: 200,
+    width: '100%',
+    resizeMode: 'cover',
+    marginTop: 170,
   },
-  itemContainer: {
-    backgroundColor: '#eee',
-    padding: 16,
-    marginHorizontal: 8,
-    borderRadius: 8,
+  progressBar: {
+    height: 20,
+    backgroundColor: '#ccc',
+    marginHorizontal: 16,
+    borderRadius: 10,
+    overflow: 'hidden',
   },
-  itemText: {
-    fontSize: 16,
+  progress: {
+    height: '100%',
+    backgroundColor: '#f00',
+  },
+  seekThumb: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#f00',
+    position: 'absolute',
   },
 });
-
-export default RenderCard;

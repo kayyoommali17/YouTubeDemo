@@ -14,7 +14,7 @@ import Colors from '../../themes/colors';
 import data from '../../utils/constantData';
 import CustomCard from '../../component/CustomCard';
 import localeImage from '../../utils/localeInImage';
-import {normalize, vh, vw} from '../../utils/dimensions';
+import {vh, vw} from '../../utils/dimensions';
 
 /**
  * @metaData data
@@ -54,8 +54,10 @@ const metaData = [
  * @description return simillar videos
  */
 
-const VideoPlayer = () => {
+const VideoPlayer = ({route}: any) => {
   // const [play, setPlay] = useState(false);
+  console.log('routes', route);
+
   const _renderItem = ({item}: any) => {
     return (
       <View>
@@ -147,6 +149,17 @@ const VideoPlayer = () => {
 
   return (
     <View style={styles.mainContainerStyle}>
+      <Video
+        paused={true}
+        resizeMode={'cover'}
+        style={{width: '100%', height: 200}}
+        source={{
+          uri: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+        }}
+        controls
+      />
+
+      {/* <Text>{route}</Text> */}
       <FlatList
         maxToRenderPerBatch={5}
         data={data.slice(0, 5)}
@@ -169,14 +182,14 @@ const styles = StyleSheet.create({
   videoTitleStyle: {
     fontWeight: '800',
     color: Colors.black,
-    fontSize: normalize(16),
+    fontSize: vh(16),
     marginHorizontal: vw(15),
-    marginVertical: normalize(10),
+    marginVertical: vh(10),
   },
   metaInfoStyle: {
     opacity: 0.7,
     color: Colors.black,
-    fontSize: normalize(16),
+    fontSize: vh(16),
     marginHorizontal: vw(15),
     marginBottom: vh(10),
   },
@@ -187,14 +200,14 @@ const styles = StyleSheet.create({
   listContainer: {
     marginTop: vh(40),
     flexDirection: 'row',
-    marginHorizontal: normalize(15),
+    marginHorizontal: vh(15),
   },
   itemContainer: {
     alignItems: 'center',
     paddingHorizontal: vw(20),
   },
   itemText: {
-    fontSize: normalize(12),
+    fontSize: vh(12),
     marginTop: vh(10),
   },
   mainSubsViewStyle: {
@@ -220,14 +233,14 @@ const styles = StyleSheet.create({
   channelNameStyle: {
     fontWeight: 'bold',
     color: Colors.black,
-    fontSize: normalize(16),
+    fontSize: vh(16),
   },
   textViewStyle: {
     marginLeft: vw(10),
   },
   subsTextStyle: {
     marginTop: vh(5),
-    fontSize: normalize(14),
+    fontSize: vh(14),
   },
   subsButtonStyle: {
     backgroundColor: Colors.tabColor,
@@ -279,7 +292,7 @@ const styles = StyleSheet.create({
   },
   userCommentStyle: {
     marginLeft: vw(10),
-    fontSize: normalize(12),
+    fontSize: vh(12),
   },
 });
 

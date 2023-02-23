@@ -1,21 +1,20 @@
 import {
-  GestureResponderEvent,
+  View,
+  Text,
   Image,
-  ImageSourcePropType,
+  TextStyle,
+  ViewStyle,
   ImageStyle,
-  SafeAreaView,
   StyleProp,
   StyleSheet,
-  Text,
-  TextStyle,
   TouchableOpacity,
-  View,
-  ViewStyle,
+  ImageSourcePropType,
+  GestureResponderEvent,
 } from 'react-native';
 import React from 'react';
-import localeImage from '../../utils/localeInImage';
-import {normalize, vh, vw} from '../../utils/dimensions';
 import Colors from '../../themes/colors';
+import localeImage from '../../utils/localeInImage';
+import {vh, vw} from '../../utils/dimensions';
 interface Props {
   videoTitle?: string;
   source: ImageSourcePropType;
@@ -58,7 +57,7 @@ const styles = StyleSheet.create({
   cardTouchStyle: {
     marginVertical: vh(10),
     marginHorizontal: vw(20),
-    borderRadius: normalize(10),
+    borderRadius: vh(10),
     backgroundColor: Colors.white,
     shadowColor: '#000',
     shadowOffset: {
@@ -70,8 +69,8 @@ const styles = StyleSheet.create({
     elevation: 13,
   },
   cardImageStyle: {
-    borderTopLeftRadius: normalize(10),
-    borderTopRightRadius: normalize(10),
+    borderTopLeftRadius: vh(10),
+    borderTopRightRadius: vh(10),
     height: vw(180),
     width: '100%',
     resizeMode: 'cover',
@@ -79,9 +78,9 @@ const styles = StyleSheet.create({
   videoTitleStyle: {
     fontWeight: '600',
     color: Colors.black,
-    fontSize: normalize(20),
+    fontSize: vh(20),
     marginHorizontal: vw(15),
-    marginVertical: normalize(10),
+    marginVertical: vh(10),
   },
   channelInfoViewStyle: {
     flexDirection: 'row',
@@ -94,18 +93,18 @@ const styles = StyleSheet.create({
     width: vw(30),
     resizeMode: 'contain',
     backgroundColor: 'red',
-    borderRadius: normalize(15),
+    borderRadius: vh(15),
   },
   channelNameTextStyle: {
     opacity: 0.7,
     marginLeft: vw(10),
     color: Colors.black,
-    fontSize: normalize(16),
+    fontSize: vh(16),
   },
   metaInfoStyle: {
     opacity: 0.7,
     color: Colors.black,
-    fontSize: normalize(16),
+    fontSize: vh(16),
     marginHorizontal: vw(15),
   },
 });
