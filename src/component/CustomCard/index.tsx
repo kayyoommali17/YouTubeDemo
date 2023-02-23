@@ -51,7 +51,7 @@ const CustomCard = (props: Props) => {
   );
 };
 
-export default CustomCard;
+export default React.memo(CustomCard);
 
 const styles = StyleSheet.create({
   cardTouchStyle: {

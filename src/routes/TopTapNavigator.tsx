@@ -1,12 +1,12 @@
 import React from 'react';
-import Video from '../modules/video';
+import Video from '../modules/videoRenderScreen';
 import Colors from '../themes/colors';
 import Articles from '../modules/articles';
 import Channels from '../modules/channels';
 import {normalize} from '../utils/dimensions';
 import routesNames from '../utils/routesNames';
-import VideoRenderScreen from '../modules/video';
-import VideoPlayer from '../modules/videoplayer';
+import VideoRenderScreen from '../modules/videoRenderScreen';
+import VideoPlayer from '../modules/videoPlayerScreen';
 import {StyleSheet, Text, View} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 

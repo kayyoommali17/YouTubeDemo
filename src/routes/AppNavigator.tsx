@@ -1,12 +1,12 @@
 import * as React from 'react';
-import Video from '../modules/video';
+import Video from '../modules/videoRenderScreen';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import routesNames from '../utils/routesNames';
 import MyTopTabs from './TopTapNavigator';
 import HeaderNavigation from '../component/Header/Header';
-import VideoPlayer from '../modules/videoplayer';
+import VideoPlayer from '../modules/videoPlayerScreen';
 import {
   GestureResponderEvent,
   Image,
@@ -42,6 +42,7 @@ function AppNavigator() {
           headerTitle: 'Favourites',
           headerLeft: headerIcon,
           headerShadowVisible: false,
+          headerTitleAlign: 'center',
         })}>
         <Stack.Screen name={routesNames.topTaps} component={MyTopTabs} />
         <Stack.Screen name={routesNames.videoPlayer} component={VideoPlayer} />

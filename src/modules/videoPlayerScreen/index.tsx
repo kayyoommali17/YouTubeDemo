@@ -15,6 +15,8 @@ import data from '../../utils/constantData';
 import CustomCard from '../../component/CustomCard';
 import localeImage from '../../utils/localeInImage';
 import {vh, vw} from '../../utils/dimensions';
+import {useRoute} from '@react-navigation/native';
+import {localeString} from '../../utils/localString';
 
 /**
  * @metaData data
@@ -54,9 +56,14 @@ const metaData = [
  * @description return simillar videos
  */
 
-const VideoPlayer = ({route}: any) => {
+const VideoPlayer = () => {
   // const [play, setPlay] = useState(false);
-  console.log('routes', route);
+  // const {itemId, title, description} = route?.params;
+  // console.log('routes', item);
+  const route = useRoute<any>();
+  // const {itemId, title, description} = route?.params;
+
+  let backData = route?.params;
 
   const _renderItem = ({item}: any) => {
     return (
@@ -90,15 +97,9 @@ const VideoPlayer = ({route}: any) => {
   const _listHeaderComponent = () => {
     return (
       <View>
-        <Text style={styles.videoTitleStyle}>
-          {'How to play PUBG MOBILE on emulator'}
-        </Text>
-        <Text style={styles.metaInfoStyle}>{'94k views . 3 days ago'}</Text>
-        <Text style={styles.description}>
-          {
-            'Big Buck Bunny tells the story of a giant rabbit with a heart bigger than himself. When one sunny day three rodents rudely harass him, something snaps... '
-          }
-        </Text>
+        {<Text style={styles.videoTitleStyle}>{backData?.title}</Text>}
+        <Text style={styles.metaInfoStyle}>{localeString.views}</Text>
+        <Text style={styles.description}>{backData?.description}</Text>
         <View style={styles.listContainer}>
           {metaData.map(_buttonsRenderItem)}
         </View>
@@ -110,19 +111,25 @@ const VideoPlayer = ({route}: any) => {
               source={localeImage.cahannelImage}
             />
             <View style={styles.textViewStyle}>
-              <Text style={styles.channelNameStyle}>{'Technical Guruji'}</Text>
-              <Text style={styles.subsTextStyle}>{'15K Subscribers'}</Text>
+              <Text style={styles.channelNameStyle}>
+                {localeString.channelName}
+              </Text>
+              <Text style={styles.subsTextStyle}>{localeString.totalSubs}</Text>
             </View>
           </View>
           <TouchableOpacity style={styles.subsButtonStyle}>
-            <Text style={styles.subsButtonTextStyle}>{'Subscribe'}</Text>
+            <Text style={styles.subsButtonTextStyle}>{localeString.subs}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.commentMainViewStyle}>
           <View style={styles.commentInnerViewStyle}>
             <View style={styles.commentsTotalStyle}>
-              <Text style={styles.commentTextStyle}>{'Comments'}</Text>
-              <Text style={styles.commenntNumberStyle}>{'32'}</Text>
+              <Text style={styles.commentTextStyle}>
+                {localeString.totalComment}
+              </Text>
+              <Text style={styles.commenntNumberStyle}>
+                {localeString.allCommet}
+              </Text>
             </View>
             <Image
               resizeMode="cover"
@@ -136,11 +143,7 @@ const VideoPlayer = ({route}: any) => {
               style={styles.commentImageStyle}
               source={localeImage.cahannelImage}
             />
-            <Text style={styles.userCommentStyle}>
-              {
-                'Big Buck Bunny tells the story of a giant rabbit with a heart bigger than himself'
-              }
-            </Text>
+            <Text style={styles.userCommentStyle}>{localeString.comment}</Text>
           </View>
         </View>
       </View>
@@ -158,13 +161,12 @@ const VideoPlayer = ({route}: any) => {
         }}
         controls
       />
-
-      {/* <Text>{route}</Text> */}
       <FlatList
+        bounces={false}
         maxToRenderPerBatch={5}
         data={data.slice(0, 5)}
         renderItem={_renderItem}
-        keyExtractor={(item: any) => item.id}
+        keyExtractor={(item: any, index: number) => index.toString()}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={_listHeaderComponent}
       />
@@ -172,7 +174,7 @@ const VideoPlayer = ({route}: any) => {
   );
 };
 
-export default VideoPlayer;
+export default React.memo(VideoPlayer);
 
 const styles = StyleSheet.create({
   mainContainerStyle: {
@@ -198,7 +200,7 @@ const styles = StyleSheet.create({
     textAlign: 'justify',
   },
   listContainer: {
-    marginTop: vh(40),
+    marginTop: vh(20),
     flexDirection: 'row',
     marginHorizontal: vh(15),
   },
