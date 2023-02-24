@@ -109,8 +109,8 @@ const VideoPlayer = () => {
         </View>
         <Slider
           tapToSeek
-          value={currentTime}
           minimumValue={0}
+          value={currentTime}
           maximumValue={duration}
           onSlidingComplete={value => {
             value = Array.isArray(value) ? value[0] : value;

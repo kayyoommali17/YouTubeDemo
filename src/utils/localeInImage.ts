@@ -3,6 +3,7 @@ const localeImage = {
   play: require('../assets/images/play.png'),
   pause: require('../assets/images/pause.png'),
   donate: require('../assets/images/money.png'),
+  unfold: require('../assets/images/unfold.png'),
   back: require('../assets/images/RightArrow.png'),
   dislike: require('../assets/images/dislike.png'),
   skipBkrwd: require('../assets/images/Page-1.png'),

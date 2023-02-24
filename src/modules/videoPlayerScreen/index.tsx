@@ -12,10 +12,10 @@ import React from 'react';
 import Video from 'react-native-video';
 import Colors from '../../themes/colors';
 import data from '../../utils/constantData';
-import CustomCard from '../../component/CustomCard';
-import localeImage from '../../utils/localeInImage';
 import {vh, vw} from '../../utils/dimensions';
 import {useRoute} from '@react-navigation/native';
+import CustomCard from '../../component/CustomCard';
+import localeImage from '../../utils/localeInImage';
 import {localeString} from '../../utils/localString';
 
 /**
@@ -64,6 +64,8 @@ const VideoPlayer = () => {
   // const {itemId, title, description} = route?.params;
 
   let backData = route?.params;
+
+  console.log('routes data', backData);
 
   const _renderItem = ({item}: any) => {
     return (
@@ -132,9 +134,9 @@ const VideoPlayer = () => {
               </Text>
             </View>
             <Image
-              resizeMode="cover"
+              resizeMode="contain"
               style={styles.commentImageStyle}
-              source={localeImage.cahannelImage}
+              source={localeImage.unfold}
             />
           </View>
           <View style={styles.userCommentViewStyle}>
@@ -146,6 +148,9 @@ const VideoPlayer = () => {
             <Text style={styles.userCommentStyle}>{localeString.comment}</Text>
           </View>
         </View>
+        <Text style={styles.smillarVideoTextStyle}>
+          {localeString.smillarVideo}
+        </Text>
       </View>
     );
   };
@@ -165,10 +170,11 @@ const VideoPlayer = () => {
         bounces={false}
         maxToRenderPerBatch={5}
         data={data.slice(0, 5)}
+        contentContainerStyle={{paddingBottom: 20}}
         renderItem={_renderItem}
-        keyExtractor={(item: any, index: number) => index.toString()}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={_listHeaderComponent}
+        keyExtractor={(item: any, index: number) => index.toString()}
       />
     </View>
   );
@@ -260,10 +266,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   commentImageStyle: {
-    height: vw(25),
-    width: vw(25),
+    height: vw(20),
+    width: vw(20),
     resizeMode: 'cover',
-    borderRadius: vw(15),
   },
   commentMainViewStyle: {
     borderBottomWidth: 1,
@@ -295,6 +300,11 @@ const styles = StyleSheet.create({
   userCommentStyle: {
     marginLeft: vw(10),
     fontSize: vh(12),
+  },
+  smillarVideoTextStyle: {
+    marginLeft: vw(20),
+    marginTop: vh(15),
+    fontWeight: 'bold',
   },
 });
 

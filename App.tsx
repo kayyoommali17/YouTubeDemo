@@ -5,17 +5,23 @@ import CustomCard from './src/component/CustomCard';
 import VideoPlayer from './src/component/video';
 import CustomApp from './src/routes/AppNavigator';
 import AppNavigator from './src/routes/AppNavigator';
+import Shimmering from './src/component/CustomShimmer/shimmering';
+import ShimmerApp from './src/component/CustomShimmer/Shimmer';
+import VideoPlayerTest from './src/Test/test';
 import CustomVideoPlayer from './src/Test/test';
 import RenderCard from './src/Test/test';
 import CustomTabBar from './src/Test/test';
+import ShimmerEffect from './src/Test/TestShimmer';
 
 const App = () => {
   return (
-    // <SafeAreaView style={{flex: 1}}>
-    // <AppNavigator />
-    /* </SafeAreaView> */
+    <AppNavigator />
     // <CustomVideoPlayer />
-    <VideoPlayer />
+    // <VideoPlayer />
+    // <VideoPlayerTest />r
+    // <ShimmerApp />
+    // <ShimmerEffect />
+    // <Shimmering />
   );
 };
 
