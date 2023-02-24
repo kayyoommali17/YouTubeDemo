@@ -1,94 +1,80 @@
 import React from 'react';
-import {
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-} from 'react-native';
+import {Dimensions, StyleSheet, View, FlatList} from 'react-native';
+import {vh, vw} from '../../utils/dimensions';
 import Shimmering from './shimmering';
+
 const {width: screenWidth} = Dimensions.get('screen');
-const width = screenWidth * 0.92 - 30;
+const width = screenWidth * 0.92 - vh(30);
 const list = new Array(10).fill(undefined).map((val, index) => ({
   id: index,
   name: 'name',
 }));
 const ShimmerApp = () => {
-  //   const [fetching, setFetching] = useState(true);
-  const fetching = true;
+  // const fetching = true;
 
-  const renderList = () => {
-    return list.map((val, index) => (
-      <React.Fragment key={index}>
-        <View style={styles.profileWrapper}>
-          <Shimmering
-            wrapperStyle={{
-              width: '100%',
-              height: 200,
-              borderRadius: 10,
-              borderTopEndRadius: 10,
-              borderTopLeftRadius: 10,
-            }}
-          />
-          <Shimmering
-            wrapperStyle={{
-              width: width * 0.9,
-              height: 30,
-              borderRadius: 5,
-              marginTop: 5,
-            }}
-          />
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Shimmering
-              wrapperStyle={{
-                width: 30,
-                marginTop: 15,
-                height: 30,
-                borderRadius: 15,
-              }}
-            />
-            <Shimmering
-              wrapperStyle={{
-                width: width * 0.5,
-                height: 25,
-                borderRadius: 5,
-                marginTop: 15,
-                marginLeft: 10,
-              }}
-            />
-          </View>
+  const renderItem = ({item, index}: any) => {
+    return (
+      <View style={styles.profileWrapper}>
+        <Shimmering wrapperStyle={styles.mainShimmerContainerStyle} />
+        <Shimmering wrapperStyle={styles.innerContainerStyle} />
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Shimmering wrapperStyle={styles.profileShimmerStyle} />
+          <Shimmering wrapperStyle={styles.channelShimmerStyle} />
         </View>
-      </React.Fragment>
-    ));
+      </View>
+    );
   };
+
   return (
-    <ScrollView style={styles.container}>
-      {fetching ? (
-        renderList()
-      ) : (
-        <View style={{justifyContent: 'center', alignItems: 'center'}}>
-          <Text>Hello React Native</Text>
-        </View>
-      )}
-    </ScrollView>
+    <FlatList
+      data={list}
+      renderItem={renderItem}
+      keyExtractor={(item, index) => index.toString()}
+      style={styles.container}
+    />
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 20,
+    marginHorizontal: vw(20),
   },
   profileWrapper: {
-    marginTop: 30,
+    marginTop: vh(20),
   },
   profile: {
-    marginHorizontal: 10,
+    marginHorizontal: vh(10),
   },
   postWrapper: {
-    marginVertical: 10,
+    marginVertical: vh(10),
+  },
+  mainShimmerContainerStyle: {
+    width: '100%',
+    height: 200,
+    borderRadius: vh(10),
+    borderTopEndRadius: vh(10),
+    borderTopLeftRadius: vh(10),
+  },
+  innerContainerStyle: {
+    width: width * 0.9,
+    height: vh(30),
+    borderRadius: vh(5),
+    marginTop: vh(5),
+  },
+  profileShimmerStyle: {
+    width: vh(30),
+    marginTop: vh(15),
+    height: vh(30),
+    borderRadius: vh(15),
+  },
+  channelShimmerStyle: {
+    height: vh(25),
+    width: width * 0.5,
+    borderRadius: vh(5),
+    marginTop: vh(15),
+    marginLeft: vh(10),
   },
 });
 
-export default ShimmerApp;
+export default React.memo(ShimmerApp);

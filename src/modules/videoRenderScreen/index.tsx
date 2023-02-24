@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from 'react';
 import {vh} from '../../utils/dimensions';
-import renderdata from '../../utils/constantData';
+import React, {useEffect, useState} from 'react';
 import routesNames from '../../utils/routesNames';
 import CustomCard from '../../component/CustomCard';
 import {useNavigation} from '@react-navigation/native';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
-import ShimmerEffect from '../../Test/TestShimmer';
 import ShimmerApp from '../../component/CustomShimmer/Shimmer';
+
+import renderData from '../../utils/constantData';
+
 const VideoRenderScreen = () => {
   const navigation = useNavigation<any>();
   const [data, setData] = useState<any>();
@@ -15,7 +16,7 @@ const VideoRenderScreen = () => {
   useEffect(() => {
     // Simulate loading data
     setTimeout(() => {
-      setData(renderdata);
+      setData(renderData);
       setLoading(false);
     }, 2000);
   }, []);
@@ -31,9 +32,6 @@ const VideoRenderScreen = () => {
         onPress={() => {
           navigation.navigate(routesNames.videoPlayer, {
             renderdata: item,
-            itemId: item?.id,
-            title: item?.title,
-            description: item?.description,
           });
         }}
         videoTitle={item?.title}
@@ -69,7 +67,7 @@ const VideoRenderScreen = () => {
         style={{marginBottom: 20}}
         contentContainerStyle={{paddingBottom: 20}}
         ListEmptyComponent={renderEmptyComponent}
-        keyExtractor={(item: any, index: number) => item.id.toString()}
+        keyExtractor={item => item.id.toString()}
       />
     </View>
   );

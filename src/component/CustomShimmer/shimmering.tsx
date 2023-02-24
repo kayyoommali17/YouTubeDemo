@@ -102,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Shimmering;
+export default React.memo(Shimmering);

@@ -1,19 +1,17 @@
 import {
-  Button,
   FlatList,
   Image,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import Video from 'react-native-video';
 import Colors from '../../themes/colors';
-import data from '../../utils/constantData';
 import {vh, vw} from '../../utils/dimensions';
 import {useRoute} from '@react-navigation/native';
+import renderData from '../../utils/constantData';
 import CustomCard from '../../component/CustomCard';
 import localeImage from '../../utils/localeInImage';
 import {localeString} from '../../utils/localString';
@@ -57,20 +55,24 @@ const metaData = [
  */
 
 const VideoPlayer = () => {
-  // const [play, setPlay] = useState(false);
-  // const {itemId, title, description} = route?.params;
-  // console.log('routes', item);
   const route = useRoute<any>();
-  // const {itemId, title, description} = route?.params;
-
   let backData = route?.params;
+  const [videoUri, setVideoUri] = useState(backData?.renderdata?.sources);
+  let myNewData = renderData.filter((item: any) => item?.sources !== videoUri);
 
-  console.log('routes data', backData);
-
+  /**
+   *
+   * @_renderItem component
+   * @description return cardto the video list
+   */
   const _renderItem = ({item}: any) => {
     return (
       <View>
-        <CustomCard videoTitle={item?.title} source={{uri: item?.thumb}} />
+        <CustomCard
+          onPress={() => setVideoUri(item?.sources)}
+          videoTitle={item?.title}
+          source={{uri: item?.thumb}}
+        />
       </View>
     );
   };
@@ -99,9 +101,15 @@ const VideoPlayer = () => {
   const _listHeaderComponent = () => {
     return (
       <View>
-        {<Text style={styles.videoTitleStyle}>{backData?.title}</Text>}
+        {
+          <Text style={styles.videoTitleStyle}>
+            {backData?.renderdata?.title}
+          </Text>
+        }
         <Text style={styles.metaInfoStyle}>{localeString.views}</Text>
-        <Text style={styles.description}>{backData?.description}</Text>
+        <Text style={styles.description}>
+          {backData?.renderdata?.description}
+        </Text>
         <View style={styles.listContainer}>
           {metaData.map(_buttonsRenderItem)}
         </View>
@@ -135,8 +143,8 @@ const VideoPlayer = () => {
             </View>
             <Image
               resizeMode="contain"
-              style={styles.commentImageStyle}
               source={localeImage.unfold}
+              style={styles.commentImageStyle}
             />
           </View>
           <View style={styles.userCommentViewStyle}>
@@ -162,19 +170,18 @@ const VideoPlayer = () => {
         resizeMode={'cover'}
         style={{width: '100%', height: 200}}
         source={{
-          uri: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+          uri: videoUri,
         }}
         controls
       />
       <FlatList
         bounces={false}
-        maxToRenderPerBatch={5}
-        data={data.slice(0, 5)}
-        contentContainerStyle={{paddingBottom: 20}}
         renderItem={_renderItem}
+        data={myNewData.splice(0, 5)}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={_listHeaderComponent}
-        keyExtractor={(item: any, index: number) => index.toString()}
+        contentContainerStyle={{paddingBottom: 20}}
+        keyExtractor={item => item?.id?.toString()}
       />
     </View>
   );
@@ -269,6 +276,7 @@ const styles = StyleSheet.create({
     height: vw(20),
     width: vw(20),
     resizeMode: 'cover',
+    borderRadius: vw(10),
   },
   commentMainViewStyle: {
     borderBottomWidth: 1,
