@@ -6,10 +6,11 @@ const renderData = [
     sources:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
 
-    subtitle: 'how are you !',
+    subtitle: 'Big Bang Bunny Funny Video',
     thumb:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg',
     title: 'Big Buck Bunny',
+    channelName: 'Cartoon Network',
   },
   {
     id: 243,
@@ -18,10 +19,11 @@ const renderData = [
     sources:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
 
-    subtitle: 'how are you ??',
+    subtitle: 'Blender Movie | 2006',
     thumb:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg',
     title: 'Elephant Dream',
+    channelName: 'National Geographic',
   },
   {
     id: 293,
@@ -30,10 +32,11 @@ const renderData = [
     sources:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
 
-    subtitle: 'By Google',
+    subtitle: 'HBO NETWORKS',
     thumb:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerBlazes.jpg',
     title: 'For Bigger Blazes',
+    channelName: 'HBO Official',
   },
   {
     id: 498,
@@ -42,10 +45,11 @@ const renderData = [
     sources:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
 
-    subtitle: 'By Google',
+    subtitle: 'Chrome Cast | easiest wy to enjoy video.',
     thumb:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerEscapes.jpg',
     title: 'For Bigger Escape',
+    channelName: 'Escapse Routes',
   },
   {
     id: 590,
@@ -54,10 +58,11 @@ const renderData = [
     sources:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
 
-    subtitle: 'By Google',
+    subtitle: 'IntroDucing Chrome Cast',
     thumb:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerFun.jpg',
     title: 'For Bigger Fun',
+    channelName: 'Google Chrome',
   },
   {
     id: 6909,
@@ -66,10 +71,11 @@ const renderData = [
     sources:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
 
-    subtitle: 'By Google',
+    subtitle: 'Music Video on the way || Bucket',
     thumb:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerJoyrides.jpg',
     title: 'For Bigger Joyrides',
+    channelName: 'T-Series',
   },
   {
     id: 790,
@@ -78,10 +84,11 @@ const renderData = [
     sources:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
 
-    subtitle: 'By Google',
+    subtitle: 'Your Tv || Bice Nice',
     thumb:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerMeltdowns.jpg',
     title: 'For Bigger Meltdowns',
+    channelName: 'YouTube Videos',
   },
   {
     id: 890,
@@ -90,10 +97,11 @@ const renderData = [
     sources:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
 
-    subtitle: '<>how are you<>',
+    subtitle: 'Sintel Film Production || Blender Foundation',
     thumb:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg',
     title: 'Sintel',
+    channelName: 'Short Films',
   },
   {
     id: 3459,
@@ -102,10 +110,11 @@ const renderData = [
     sources:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4',
 
-    subtitle: 'hello there..',
+    subtitle: 'Smoking Kills..',
     thumb:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/images/SubaruOutbackOnStreetAndDirt.jpg',
     title: 'Subaru Outback On Street And Dirt',
+    channelName: 'Outback Street',
   },
   {
     id: 4550,
@@ -114,10 +123,11 @@ const renderData = [
     sources:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
 
-    subtitle: '!-> how are you',
+    subtitle: 'Tears of Steel ||  Open source 3D creation',
     thumb:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/images/TearsOfSteel.jpg',
     title: 'Tears of Steel',
+    channelName: 'Tears Official',
   },
   {
     id: 4541,
@@ -126,10 +136,11 @@ const renderData = [
     sources:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4',
 
-    subtitle: 'where are you',
+    subtitle: 'Where are you Now!',
     thumb:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/images/VolkswagenGTIReview.jpg',
     title: 'Volkswagen GTI Review',
+    channelName: 'AutoMobile OP',
   },
   {
     id: 452,
@@ -138,10 +149,11 @@ const renderData = [
     sources:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4',
 
-    subtitle: 'whatsUp',
+    subtitle: 'Bullrun Live Rally || 2010',
     thumb:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/images/WeAreGoingOnBullrun.jpg',
     title: 'We Are Going On Bullrun',
+    channelName: 'Live Videos',
   },
   {
     id: 1356,
@@ -150,10 +162,11 @@ const renderData = [
     sources:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4',
 
-    subtitle: 'love the way you like',
+    subtitle: 'Love the way you like || Chris and Jorge ',
     thumb:
       'https://storage.googleapis.com/gtv-videos-bucket/sample/images/WhatCarCanYouGetForAGrand.jpg',
     title: 'What care can you get for a grand?',
+    channelName: 'Songs Officials',
   },
 ];
 

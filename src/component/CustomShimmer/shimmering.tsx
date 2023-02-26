@@ -35,6 +35,9 @@ const Shimmering: React.FC<IProps> = ({
   const [viewWidth, setViewWidth] = useState(-1);
   const animation = useRef(ShimmringAnimation).current;
 
+  /**
+   * @returns Start animation as screen render
+   */
   useEffect(() => {
     startAnimation();
     return () => {
@@ -42,14 +45,29 @@ const Shimmering: React.FC<IProps> = ({
     };
   }, []);
 
+  /**
+   *
+   * @startAnimation function
+   * @returns start animation
+   */
   const startAnimation = () => {
     animation.start();
   };
 
+  /**
+   *
+   * @_onLayoutChange Function
+   * @returns  set the ViewWidth as layout changes
+   */
   const _onLayoutChange = (event: LayoutChangeEvent) => {
-    setViewWidth(event.nativeEvent.layout.width);
+    setViewWidth(event?.nativeEvent?.layout?.width);
   };
 
+  /**
+   *
+   * @_getLeftValue Function
+   * @returns an interpolated value based on the current value of a shimmeringAnimatedValue object.
+   */
   const _getLeftValue = () => {
     return shimmeringAnimatedValue.interpolate({
       inputRange: [0, 1],
@@ -57,6 +75,9 @@ const Shimmering: React.FC<IProps> = ({
     });
   };
 
+  /**
+   * @returns constants
+   */
   const width = Dimensions.get('screen').width;
   const loadingStyle = {backgroundColor: GREY};
   const left = _getLeftValue();
@@ -92,13 +113,13 @@ const Shimmering: React.FC<IProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    overflow: 'hidden',
     flex: 0,
     bottom: 0,
     left: 0,
-    position: 'absolute',
     right: 0,
     top: 0,
+    overflow: 'hidden',
+    position: 'absolute',
   },
 });
 

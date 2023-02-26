@@ -21,6 +21,7 @@ import {hitSlop} from '../../utils/constant';
 
 interface Props {
   source: any;
+  onPressBackButton?: any;
   videoStyles?: StyleProp<ViewStyle>;
 }
 
@@ -38,13 +39,13 @@ const BUFFER_CONFIG: BufferConfig = {
   bufferForPlaybackAfterRebufferMs: 5000,
 };
 const VideoPlayerComponent = (props: Props) => {
+  const timeout = useRef<any>([]);
   const [paused, setPaused] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setcurrentTime] = useState(0);
   const [videoRef, setVideoRef] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [showIcon, setShowIcon] = useState<boolean>(true);
-  const timeout = useRef<any>([]);
+  const [showIcon, setShowIcon] = useState<boolean>(false);
   const [currOrientation, setOrientation] = useState('PORTRAIT');
   const [videoStyle, setVideoStyle] = useState<any>({
     height: vh(200),
@@ -71,7 +72,7 @@ const VideoPlayerComponent = (props: Props) => {
   React.useEffect(() => {
     const timeout1 = setTimeout(() => {
       setShowIcon(false);
-    }, 3000);
+    }, 5000);
     timeout.current.push(timeout1);
     return () => {
       setPaused(true);
@@ -119,15 +120,26 @@ const VideoPlayerComponent = (props: Props) => {
   const dynamicHieghtWidth = isOreintation ? vh(40) : vh(30);
 
   /**
+   * @clearTimeOut function
+   * @description to clear timeOut
+   */
+  const clearTimeOut = () => {
+    while (timeout?.current?.length) {
+      clearTimeout(timeout?.current?.pop());
+    }
+  };
+
+  /**
    * @_skipForward function
    * @description skip forward 10 sec
    */
   const _skipForward = () => {
     videoRef.seek(currentTime + 10);
     setShowIcon(true);
-    while (timeout.current.length) {
-      clearTimeout(timeout.current.pop());
-    }
+    // while (timeout.current.length) {
+    //   clearTimeout(timeout.current.pop());
+    // }
+    clearTimeOut();
     const timeout3 = setTimeout(() => {
       setShowIcon(false);
     }, 3000);
@@ -144,13 +156,22 @@ const VideoPlayerComponent = (props: Props) => {
   const _skipBackward = () => {
     videoRef.seek(currentTime - 10);
     setShowIcon(true);
-    while (timeout.current.length) {
-      clearTimeout(timeout.current.pop());
-    }
+    // while (timeout.current.length) {
+    //   clearTimeout(timeout.current.pop());
+    // }
+    clearTimeOut();
+
     const timeout3 = setTimeout(() => {
       setShowIcon(false);
     }, 3000);
     timeout.current.push(timeout3);
+  };
+
+  const onSlidindStart = () => {
+    // while (timeout.current.length) {
+    //   clearTimeout(timeout?.current?.pop());
+    // }
+    clearTimeOut();
   };
 
   /**
@@ -161,6 +182,10 @@ const VideoPlayerComponent = (props: Props) => {
     value = Array.isArray(value) ? value[0] : value;
     setcurrentTime(value);
     videoRef.seek(value);
+    const timeout6 = setTimeout(() => {
+      setShowIcon(false);
+    }, 3000);
+    timeout?.current?.push(timeout6);
   };
 
   /**
@@ -177,7 +202,22 @@ const VideoPlayerComponent = (props: Props) => {
    * @description seting toggle
    */
   const _togglePlayPaused = () => {
-    setPaused(!paused);
+    setPaused(prev => {
+      if (prev === false) {
+        // while (timeout.current.length) {
+        //   clearTimeout(timeout.current.pop());
+        // }
+        clearTimeOut();
+
+        setShowIcon(true);
+      } else {
+        const timeout5 = setTimeout(() => {
+          setShowIcon(false);
+        }, 3000);
+        timeout?.current?.push(timeout5);
+      }
+      return !prev;
+    });
   };
 
   /**
@@ -197,10 +237,7 @@ const VideoPlayerComponent = (props: Props) => {
    * @description seting loading true if loading start
    */
   const _onLoadStart = () => {
-    console.log('bonloadStart');
-    // console.log('first');
     setIsLoading(true);
-    // setIsBuffering(true);
   };
 
   /**
@@ -222,17 +259,6 @@ const VideoPlayerComponent = (props: Props) => {
     }, 3000);
     console.log('jhihihi', timeout2);
     timeout.current.push(timeout2);
-  };
-
-  const onSlidingStart = () => {
-    setShowIcon(true);
-    while (timeout.current.length) {
-      clearTimeout(timeout.current.pop());
-    }
-    const timeout4 = setTimeout(() => {
-      setShowIcon(false);
-    }, 3000);
-    timeout.current.push(timeout4);
   };
 
   return (
@@ -263,6 +289,10 @@ const VideoPlayerComponent = (props: Props) => {
         {showIcon && (
           <>
             <TouchableImage
+              onPress={() => {
+                props.onPressBackButton();
+                setPaused(true);
+              }}
               source={localeImage.back}
               imageStyle={[
                 styles.backImageStyle,
@@ -319,8 +349,8 @@ const VideoPlayerComponent = (props: Props) => {
               minimumValue={0}
               value={currentTime}
               maximumValue={duration}
+              onSlidingStart={onSlidindStart}
               thumbTintColor={Colors.white}
-              // onAccessibilityTap={onSlidingStart}
               maximumTrackTintColor={Colors.white}
               minimumTrackTintColor={Colors.tabColor}
               style={[

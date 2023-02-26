@@ -16,6 +16,8 @@ import Colors from '../../themes/colors';
 import localeImage from '../../utils/localeInImage';
 import {vh, vw} from '../../utils/dimensions';
 interface Props {
+  thumb?: any;
+  channelName?: string;
   videoTitle?: string;
   source: ImageSourcePropType;
   titleStyle?: StyleProp<TextStyle>;
@@ -33,6 +35,7 @@ const CustomCard = (props: Props) => {
         style={[styles.cardImageStyle, props.cardImageeStyle]}
         source={props?.source || localeImage.happyWomen}
       />
+      <Text style={styles.durationTextStyle}>{'5:50'}</Text>
       <Text style={[styles.videoTitleStyle, props.titleStyle]}>
         {props.videoTitle || 'How to make yourself happy?'}
       </Text>
@@ -43,9 +46,11 @@ const CustomCard = (props: Props) => {
       <View style={styles.channelInfoViewStyle}>
         <Image
           style={styles.channelLogoStyle}
-          source={localeImage.cahannelImage}
+          source={props?.source || localeImage.cahannelImage}
         />
-        <Text style={styles.channelNameTextStyle}>{'Rachel Geller'}</Text>
+        <Text style={styles.channelNameTextStyle}>
+          {props?.channelName || 'Rachel Geller'}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -91,8 +96,7 @@ const styles = StyleSheet.create({
   channelLogoStyle: {
     height: vw(30),
     width: vw(30),
-    resizeMode: 'contain',
-    backgroundColor: 'red',
+    resizeMode: 'cover',
     borderRadius: vh(15),
   },
   channelNameTextStyle: {
@@ -106,5 +110,12 @@ const styles = StyleSheet.create({
     color: Colors.black,
     fontSize: vh(16),
     marginHorizontal: vw(15),
+  },
+  durationTextStyle: {
+    right: vw(10),
+    bottom: vh(120),
+    fontWeight: 'bold',
+    position: 'absolute',
+    color: Colors.white,
   },
 });

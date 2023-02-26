@@ -3,8 +3,8 @@ import React from 'react';
 
 const Articles = () => {
   return (
-    <View>
-      <Text>Articles</Text>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Text style={{color: 'red'}}>Comming Soon !</Text>
     </View>
   );
 };

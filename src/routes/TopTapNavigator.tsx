@@ -13,15 +13,6 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 const Tab = createMaterialTopTabNavigator();
 
 export default function MyTopTabs() {
-  // const TabNavigationRef = React.useRef(null);
-  // // const dispatch=
-  // const jumpToIndex = ({route}: any) => {
-  //   if (route.name === routesNames.articles) {
-  //     TabNavigationRef.current?.dispatch({
-  //       ...TabActions.jumpTo('Third'),
-  //     });
-  //   }
-  // };
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -63,7 +54,7 @@ export default function MyTopTabs() {
         lazy: false,
       })}
       initialRouteName={routesNames.videos}>
-      <Tab.Screen name={routesNames.channels} component={VideoPlayer} />
+      <Tab.Screen name={routesNames.channels} component={Channels} />
       <Tab.Screen name={routesNames.videos} component={VideoRenderScreen} />
       <Tab.Screen name={routesNames.articles} component={Articles} />
     </Tab.Navigator>

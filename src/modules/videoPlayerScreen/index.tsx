@@ -1,6 +1,7 @@
 import {
   FlatList,
   Image,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,11 +11,11 @@ import React, {useState} from 'react';
 import Share from 'react-native-share';
 import Colors from '../../themes/colors';
 import {vh, vw} from '../../utils/dimensions';
-import {useRoute} from '@react-navigation/native';
 import renderData from '../../utils/constantData';
 import CustomCard from '../../component/CustomCard';
 import localeImage from '../../utils/localeInImage';
 import {localeString} from '../../utils/localString';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import VideoPlayerComponent from '../../component/videoComponet';
 import ShimmerForVideoPlayer from '../../component/CustomShimmer/ShimmerForVideoPlayer';
 
@@ -59,18 +60,19 @@ const metaData = [
 const VideoPlayer = () => {
   const route = useRoute<any>();
   let backData = route?.params;
-  const [videoUri, setVideoUri] = useState(backData?.renderdata?.sources);
-  let myNewData = renderData.filter((item: any) => item?.sources !== videoUri);
-  const [data, setData] = useState<any>();
-  const [loading, setLoading] = useState(true);
-
+  const navigation = useNavigation<any>();
+  const [details, setDetails] = useState(backData?.renderdata);
+  const [shimmerLoading, setShimmerLoading] = useState(true);
+  const [title, setTitle] = useState<any>(backData?.renderdata?.title);
+  let myNewData = renderData.filter(
+    (item: any) => item?.sources !== details?.sources,
+  );
   React.useEffect(() => {
-    // Simulate loading data
+    // Simulate shimmerLoading data
     setTimeout(() => {
-      setData(renderData);
-      setLoading(false);
-    }, 2000);
-  }, []);
+      setShimmerLoading(false);
+    }, 1200);
+  }, [details]);
 
   /**
    *
@@ -81,7 +83,9 @@ const VideoPlayer = () => {
     return (
       <View>
         <CustomCard
-          onPress={() => setVideoUri(item?.sources)}
+          onPress={() => {
+            setDetails(item);
+          }}
           videoTitle={item?.title}
           source={{uri: item?.thumb}}
         />
@@ -89,6 +93,10 @@ const VideoPlayer = () => {
     );
   };
 
+  /**
+   * @CustomShare Function
+   * @description returns react native share
+   */
   const CustomShare = async () => {
     const myCustomShare = {
       message: 'This is test message',
@@ -107,8 +115,11 @@ const VideoPlayer = () => {
     }
   };
 
+  /**
+   * @onPresShare Function
+   * @description onPress to active react native share
+   */
   const onPresShare = (id: any) => {
-    console.log('item', id);
     if (id === 3) {
       CustomShare();
     } else {
@@ -117,7 +128,6 @@ const VideoPlayer = () => {
   };
 
   /**
-   *
    * @_buttonsRenderItem componnet
    * @description return feature button
    */
@@ -132,97 +142,85 @@ const VideoPlayer = () => {
 
   /**
    *
-   * @renderEmptyComponent  component
-   * @description renturn shimmer effect
+   * @_listHeaderComponent componnet
+   * @description return header for the flatlist
    */
-  const renderEmptyComponent = () => {
-    if (loading) {
-      // Show shimmer effect while data is being loaded
+  const _listHeaderComponent = () => {
+    if (shimmerLoading) {
       return <ShimmerForVideoPlayer />;
     } else {
-      // Show message if there is no data
       return (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No data available</Text>
+        <View>
+          {<Text style={styles.videoTitleStyle}>{details?.subtitle}</Text>}
+          <Text style={styles.metaInfoStyle}>{localeString.views}</Text>
+          <Text style={styles.description}>{details?.description}</Text>
+          <View style={styles.listContainer}>
+            {metaData.map(_buttonsRenderItem)}
+          </View>
+          <View style={styles.mainSubsViewStyle}>
+            <View style={styles.channelDetailsViewStyle}>
+              <Image
+                resizeMode="cover"
+                style={styles.channelImageSTyle}
+                source={{uri: details?.thumb}}
+              />
+              <View style={styles.textViewStyle}>
+                <Text style={styles.channelNameStyle}>{details?.title}</Text>
+                <Text style={styles.subsTextStyle}>
+                  {localeString.totalSubs}
+                </Text>
+              </View>
+            </View>
+            <TouchableOpacity style={styles.subsButtonStyle}>
+              <Text style={styles.subsButtonTextStyle}>
+                {localeString.subs}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.commentMainViewStyle}>
+            <View style={styles.commentInnerViewStyle}>
+              <View style={styles.commentsTotalStyle}>
+                <Text style={styles.commentTextStyle}>
+                  {localeString.totalComment}
+                </Text>
+                <Text style={styles.commenntNumberStyle}>
+                  {localeString.allCommet}
+                </Text>
+              </View>
+              <Image
+                resizeMode="contain"
+                source={localeImage.unfold}
+                style={styles.commentImageStyle}
+              />
+            </View>
+            <View style={styles.userCommentViewStyle}>
+              <Image
+                resizeMode="cover"
+                style={styles.commentImageStyle}
+                source={localeImage.cahannelImage}
+              />
+              <Text style={styles.userCommentStyle}>
+                {localeString.comment}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.smillarVideoTextStyle}>
+            {localeString.smillarVideo}
+          </Text>
         </View>
       );
     }
   };
 
-  /**
-   *
-   * @_listHeaderComponent componnet
-   * @description return header for the flatlist
-   */
-
-  const _listHeaderComponent = () => {
-    return (
-      <View>
-        {
-          <Text style={styles.videoTitleStyle}>
-            {backData?.renderdata?.title}
-          </Text>
-        }
-        <Text style={styles.metaInfoStyle}>{localeString.views}</Text>
-        <Text style={styles.description}>
-          {backData?.renderdata?.description}
-        </Text>
-        <View style={styles.listContainer}>
-          {metaData.map(_buttonsRenderItem)}
-        </View>
-        <View style={styles.mainSubsViewStyle}>
-          <View style={styles.channelDetailsViewStyle}>
-            <Image
-              resizeMode="cover"
-              style={styles.channelImageSTyle}
-              source={localeImage.cahannelImage}
-            />
-            <View style={styles.textViewStyle}>
-              <Text style={styles.channelNameStyle}>
-                {localeString.channelName}
-              </Text>
-              <Text style={styles.subsTextStyle}>{localeString.totalSubs}</Text>
-            </View>
-          </View>
-          <TouchableOpacity style={styles.subsButtonStyle}>
-            <Text style={styles.subsButtonTextStyle}>{localeString.subs}</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.commentMainViewStyle}>
-          <View style={styles.commentInnerViewStyle}>
-            <View style={styles.commentsTotalStyle}>
-              <Text style={styles.commentTextStyle}>
-                {localeString.totalComment}
-              </Text>
-              <Text style={styles.commenntNumberStyle}>
-                {localeString.allCommet}
-              </Text>
-            </View>
-            <Image
-              resizeMode="contain"
-              source={localeImage.unfold}
-              style={styles.commentImageStyle}
-            />
-          </View>
-          <View style={styles.userCommentViewStyle}>
-            <Image
-              resizeMode="cover"
-              style={styles.commentImageStyle}
-              source={localeImage.cahannelImage}
-            />
-            <Text style={styles.userCommentStyle}>{localeString.comment}</Text>
-          </View>
-        </View>
-        <Text style={styles.smillarVideoTextStyle}>
-          {localeString.smillarVideo}
-        </Text>
-      </View>
-    );
-  };
-
   return (
     <View style={styles.mainContainerStyle}>
-      <VideoPlayerComponent source={{uri: videoUri}} />
+      <SafeAreaView></SafeAreaView>
+      <VideoPlayerComponent
+        onPressBackButton={() => {
+          navigation.goBack();
+        }}
+        source={{uri: details?.sources}}
+      />
       <FlatList
         bounces={false}
         renderItem={_renderItem}
@@ -230,7 +228,6 @@ const VideoPlayer = () => {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={_listHeaderComponent}
         contentContainerStyle={{paddingBottom: 20}}
-        ListEmptyComponent={renderEmptyComponent}
         keyExtractor={item => item?.id?.toString()}
       />
     </View>
@@ -276,15 +273,15 @@ const styles = StyleSheet.create({
     marginTop: vh(10),
   },
   mainSubsViewStyle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: vh(15),
     borderTopWidth: 1,
-    borderBottomWidth: 1,
-    paddingHorizontal: vw(10),
     marginTop: vh(30),
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    paddingVertical: vh(15),
+    paddingHorizontal: vw(10),
     borderColor: Colors.lightGrey,
+    justifyContent: 'space-between',
   },
   channelDetailsViewStyle: {
     flexDirection: 'row',
@@ -336,8 +333,8 @@ const styles = StyleSheet.create({
   },
   commentInnerViewStyle: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   commentsTotalStyle: {
     flexDirection: 'row',
@@ -362,15 +359,6 @@ const styles = StyleSheet.create({
   smillarVideoTextStyle: {
     marginLeft: vw(20),
     marginTop: vh(15),
-    fontWeight: 'bold',
-  },
-  emptyContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyText: {
-    fontSize: 20,
     fontWeight: 'bold',
   },
 });
