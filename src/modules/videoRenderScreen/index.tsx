@@ -26,7 +26,6 @@ const VideoRenderScreen = () => {
    * @returns all the Customcard
    */
   const _renderItem = ({item}: any) => {
-    console.log('item', item?.id);
     return (
       <CustomCard
         onPress={() => {

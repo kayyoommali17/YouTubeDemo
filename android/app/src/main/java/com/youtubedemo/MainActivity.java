@@ -6,17 +6,13 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.Intent;
+import android.content.res.Configuration;
 
 public class MainActivity extends ReactActivity {
 
 
-   @Override
-   public void onConfigurationChanged(Configuration newConfig) {
-       super.onConfigurationChanged(newConfig);
-       Intent intent = new Intent("onConfigurationChanged");
-       intent.putExtra("newConfig", newConfig);
-       this.sendBroadcast(intent);
-   }
+
 
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
@@ -27,6 +23,13 @@ public class MainActivity extends ReactActivity {
     return "YouTubeDemo";
   }
 
+    @Override
+   public void onConfigurationChanged(Configuration newConfig) {
+       super.onConfigurationChanged(newConfig);
+       Intent intent = new Intent("onConfigurationChanged");
+       intent.putExtra("newConfig", newConfig);
+       this.sendBroadcast(intent);
+   }
   /**
    * Returns the instance of the {@link ReactActivityDelegate}. Here we use a util class {@link
    * DefaultReactActivityDelegate} which allows you to easily enable Fabric and Concurrent React

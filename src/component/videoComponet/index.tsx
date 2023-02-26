@@ -1,21 +1,53 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import Video from 'react-native-video';
 import Colors from '../../themes/colors';
-import {vh} from '../../utils/dimensions';
 import TouchableImage from '../TouchImage';
-import Slider from '@react-native-community/slider';
+import {vh, vw} from '../../utils/dimensions';
 import localeImage from '../../utils/localeInImage';
+import Slider from '@react-native-community/slider';
 import Orientation from 'react-native-orientation-locker';
-import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
-const VideoPlayer = () => {
-  const [paused, setPaused] = useState(true);
+import {
+  View,
+  Image,
+  Text,
+  Platform,
+  StyleProp,
+  ViewStyle,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import {hitSlop} from '../../utils/constant';
+
+interface Props {
+  source: any;
+  videoStyles?: StyleProp<ViewStyle>;
+}
+
+interface BufferConfig {
+  minBufferMs: number;
+  maxBufferMs: number;
+  bufferForPlaybackMs: number;
+  bufferForPlaybackAfterRebufferMs: number;
+}
+
+const BUFFER_CONFIG: BufferConfig = {
+  minBufferMs: 15000,
+  maxBufferMs: 50000,
+  bufferForPlaybackMs: 2500,
+  bufferForPlaybackAfterRebufferMs: 5000,
+};
+const VideoPlayerComponent = (props: Props) => {
+  const [paused, setPaused] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setcurrentTime] = useState(0);
-  const [videoRef, setVideoRef] = useState<any>('');
+  const [videoRef, setVideoRef] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [showIcon, setShowIcon] = useState<boolean>(true);
+  const timeout = useRef<any>([]);
   const [currOrientation, setOrientation] = useState('PORTRAIT');
   const [videoStyle, setVideoStyle] = useState<any>({
-    position: 'absolute',
-    height: 200,
+    height: vh(200),
     width: '100%',
   });
 
@@ -36,16 +68,15 @@ const VideoPlayer = () => {
     return `${hours}${minutes}${secnds}`;
   };
 
-  // React.useEffect(() => {
-  //   setPaused(false);
-  //   return () => {
-  //     setPaused(true);
-  //   };
-  // }, []);
-
-  // Orientation.getOrientation(res => {
-  //   setOrientation(res);
-  // });
+  React.useEffect(() => {
+    const timeout1 = setTimeout(() => {
+      setShowIcon(false);
+    }, 3000);
+    timeout.current.push(timeout1);
+    return () => {
+      setPaused(true);
+    };
+  }, []);
 
   /**
    * @description as screen render setting oreintation
@@ -68,20 +99,15 @@ const VideoPlayer = () => {
    * @description handle fullscreen mode
    */
   const handleFullScreen = () => {
-    console.log('curreOtnsdf-->', currOrientation);
     if (currOrientation.includes('LANDSCAPE')) {
       Orientation.lockToPortrait();
       setVideoStyle({
-        position: 'absolute',
-        top: 50,
         height: 200,
         width: '100%',
       });
     } else {
       Orientation.lockToLandscape();
       setVideoStyle({
-        position: 'absolute',
-        top: 0,
         height: '100%',
         width: '100%',
       });
@@ -89,20 +115,42 @@ const VideoPlayer = () => {
     console.log('currrrr', currOrientation);
   };
 
+  const isOreintation = currOrientation.includes('LANDSCAPE');
+  const dynamicHieghtWidth = isOreintation ? vh(40) : vh(30);
+
   /**
    * @_skipForward function
    * @description skip forward 10 sec
    */
   const _skipForward = () => {
     videoRef.seek(currentTime + 10);
+    setShowIcon(true);
+    while (timeout.current.length) {
+      clearTimeout(timeout.current.pop());
+    }
+    const timeout3 = setTimeout(() => {
+      setShowIcon(false);
+    }, 3000);
+    timeout.current.push(timeout3);
   };
 
+  // const onPressIcons = () => {
+
+  // };
   /**
    * @_skipBackward function
    * @description skip backward 10 sec
    */
   const _skipBackward = () => {
     videoRef.seek(currentTime - 10);
+    setShowIcon(true);
+    while (timeout.current.length) {
+      clearTimeout(timeout.current.pop());
+    }
+    const timeout3 = setTimeout(() => {
+      setShowIcon(false);
+    }, 3000);
+    timeout.current.push(timeout3);
   };
 
   /**
@@ -124,88 +172,213 @@ const VideoPlayer = () => {
     setDuration(obj.duration);
   };
 
+  /**
+   * @_togglePlayPaused function
+   * @description seting toggle
+   */
   const _togglePlayPaused = () => {
     setPaused(!paused);
   };
+
+  /**
+   * @_onBuffer function
+   * @description checking if buffering or not then setting loading activityindicator
+   */
+  const _onBuffer = ({isBuffering}: {isBuffering: boolean}) => {
+    if (isBuffering) {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * @_onLoadStart function
+   * @description seting loading true if loading start
+   */
+  const _onLoadStart = () => {
+    console.log('bonloadStart');
+    // console.log('first');
+    setIsLoading(true);
+    // setIsBuffering(true);
+  };
+
+  /**
+   * @_renderActivityIndicator function
+   * @description return activity indicator
+   */
+  const _renderActivityIndicator = () => {
+    return (
+      <View style={styles.activityIndicator}>
+        <ActivityIndicator size="large" color="#fff" />
+      </View>
+    );
+  };
+
+  const onPressIconContainer = () => {
+    setShowIcon(true);
+    const timeout2 = setTimeout(() => {
+      setShowIcon(false);
+    }, 3000);
+    console.log('jhihihi', timeout2);
+    timeout.current.push(timeout2);
+  };
+
+  const onSlidingStart = () => {
+    setShowIcon(true);
+    while (timeout.current.length) {
+      clearTimeout(timeout.current.pop());
+    }
+    const timeout4 = setTimeout(() => {
+      setShowIcon(false);
+    }, 3000);
+    timeout.current.push(timeout4);
+  };
+
   return (
-    <View
-      style={{
-        flex: 1,
-        marginTop: 60,
-      }}>
+    <View>
       <Video
-        resizeMode="cover"
         paused={paused}
-        style={styles.videoStyle}
-        // fullscreenAutorotate={false}
-        // fullscreenOrientation={'all'}
-        source={{
-          uri: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-        }}
         onLoad={_onLoad}
+        resizeMode="cover"
+        onBuffer={_onBuffer}
+        source={props.source}
+        onLoadStart={_onLoadStart}
+        fullscreenAutorotate={true}
+        fullscreenOrientation={'all'}
+        bufferConfig={BUFFER_CONFIG}
         ref={(ref: any) => setVideoRef(ref)}
+        style={[videoStyle, props.videoStyles]}
         onProgress={value => setcurrentTime(value.currentTime)}
       />
 
-      <View style={styles.videoControlStyle}>
-        <TouchableImage
-          imageStyle={styles.backImageStyle}
-          source={localeImage.back}
-          touchableStyle={styles.backButtonStyle}
-        />
-        <View style={styles.skipAndPausedStyle}>
-          <TouchableImage
-            onPress={_skipBackward}
-            imageStyle={styles.backImageStyle}
-            source={localeImage.skipBkrwd}
-          />
-          <TouchableImage
-            onPress={_togglePlayPaused}
-            imageStyle={styles.backImageStyle}
-            source={paused ? localeImage.play : localeImage.pause}
-          />
-          <TouchableImage
-            onPress={_skipForward}
-            source={localeImage.skipFrwd}
-            imageStyle={styles.backImageStyle}
-          />
-        </View>
-        <Slider
-          tapToSeek
-          minimumValue={0}
-          value={currentTime}
-          maximumValue={duration}
-          onSlidingComplete={_onSlidingComplete}
-          style={styles.sliderStyle}
-        />
-        <TouchableOpacity
-          onPress={handleFullScreen}
-          style={styles.fullNexitIconStyle}>
-          <Image source={localeImage.fullScreen} />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        hitSlop={hitSlop}
+        onPress={onPressIconContainer}
+        style={[
+          styles.videoControlStyle,
+          {height: isOreintation ? '100%' : vh(200)},
+        ]}>
+        {showIcon && (
+          <>
+            <TouchableImage
+              source={localeImage.back}
+              imageStyle={[
+                styles.backImageStyle,
+                {
+                  height: dynamicHieghtWidth,
+                  width: dynamicHieghtWidth,
+                },
+              ]}
+              touchableStyle={[
+                styles.backButtonStyle,
+                {
+                  top: isOreintation ? vh(20) : vh(10),
+                  left: isOreintation ? vh(20) : vh(10),
+                },
+              ]}
+            />
+            <View style={styles.skipAndPausedStyle}>
+              <TouchableImage
+                onPress={_skipBackward}
+                source={localeImage.skipBkrwd}
+                imageStyle={[
+                  styles.backImageStyle,
+                  {
+                    height: dynamicHieghtWidth,
+                    width: dynamicHieghtWidth,
+                  },
+                ]}
+              />
+              <TouchableImage
+                onPress={_togglePlayPaused}
+                imageStyle={[
+                  styles.backImageStyle,
+                  {
+                    height: dynamicHieghtWidth,
+                    width: dynamicHieghtWidth,
+                  },
+                ]}
+                source={paused ? localeImage.play : localeImage.pause}
+              />
+              <TouchableImage
+                onPress={_skipForward}
+                source={localeImage.skipFrwd}
+                imageStyle={[
+                  styles.backImageStyle,
+                  {
+                    height: dynamicHieghtWidth,
+                    width: dynamicHieghtWidth,
+                  },
+                ]}
+              />
+            </View>
+            <Slider
+              tapToSeek
+              minimumValue={0}
+              value={currentTime}
+              maximumValue={duration}
+              thumbTintColor={Colors.white}
+              // onAccessibilityTap={onSlidingStart}
+              maximumTrackTintColor={Colors.white}
+              minimumTrackTintColor={Colors.tabColor}
+              style={[
+                styles.sliderStyle,
+                {
+                  bottom: isOreintation ? vh(20) : vh(5),
+                },
+              ]}
+              onSlidingComplete={_onSlidingComplete}
+            />
+            <Text
+              style={[
+                styles.timeStyleText,
+                {
+                  left: isOreintation ? vw(40) : vw(20),
+                  bottom: isOreintation ? vw(20) : vw(12),
+                },
+              ]}>
+              {secondToHoursMinutesSeconds(currentTime)}
+              {'/'}
+              {secondToHoursMinutesSeconds(duration)}
+            </Text>
+            <TouchableOpacity
+              onPress={handleFullScreen}
+              style={[
+                styles.fullNexitIconStyle,
+                {
+                  bottom: isOreintation ? vh(20) : vh(10),
+                  right: isOreintation ? vh(40) : vh(15),
+                },
+              ]}>
+              <Image
+                style={styles.fullScreenImageStyle}
+                source={localeImage.fullScreen}
+              />
+            </TouchableOpacity>
+          </>
+        )}
+      </TouchableOpacity>
+      {isLoading && _renderActivityIndicator()}
     </View>
   );
 };
 
-export default VideoPlayer;
+export default VideoPlayerComponent;
 
 const styles = StyleSheet.create({
   videoStyle: {
     width: '100%',
-    borderWidth: 4,
     height: vh(200),
   },
   videoControlStyle: {
     width: '100%',
-    borderWidth: 1,
     position: 'absolute',
-    height: vh(200),
+    zIndex: 1,
   },
   backButtonStyle: {
     alignSelf: 'flex-start',
-    left: vh(10),
-    top: vh(10),
   },
   backImageStyle: {
     height: vh(30),
@@ -224,55 +397,33 @@ const styles = StyleSheet.create({
     width: vh(30),
   },
   sliderStyle: {
-    width: '95%',
-    height: vh(10),
+    borderColor: 'red',
     alignSelf: 'center',
-    marginBottom: vh(10),
+    width: Platform.OS == 'ios' ? '95%' : '100%',
   },
   fullNexitIconStyle: {
-    right: vh(10),
-    bottom: vh(10),
     alignSelf: 'flex-end',
   },
   pauseedIconStyle: {
     maxWidth: vh(40),
   },
+  timeStyleText: {
+    fontSize: vh(12),
+    fontWeight: 'bold',
+    color: Colors.white,
+    position: 'absolute',
+  },
+  activityIndicator: {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  fullScreenImageStyle: {
+    resizeMode: 'contain',
+  },
 });
-{
-  /* <Slider
-        style={{ width: '100%', height: 40 }}
-        minimumValue={0}
-        maximumValue={videoRef.current ? videoRef.current.duration : 0}
-        value={currentTime}
-        minimumTrackTintColor="#0000ff"
-        maximumTrackTintColor="#000000"
-        thumbTintColor="#0000ff"
-        onSlidingComplete={handleSliderChange}
-      /> */
-}
-
-{
-  /* <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginTop: 10,
-          width: 385,
-          alignSelf: 'center',
-        }}>
-        <Text style={{color: 'black'}}>{secondsToHHMMSS(currentTime)}</Text>
-        <Text style={{color: 'black'}}>{secondsToHHMMSS(duration)}</Text>
-        <Text onPress={() => videoRef.seek(currentTime + 10)}>
-          10SecForward
-        </Text>
-        <Text onPress={() => videoRef.seek(currentTime - 10)}>
-          10SecBackward
-        </Text>
-        <Text
-          onPress={() => {
-            setFullScreen(!isFullScreen);
-          }}>
-          Orientation
-        </Text>
-      </View> */
-}

@@ -1,34 +1,33 @@
 import React from 'react';
-import {TouchableOpacity, Text} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Share from 'react-native-share';
-
-const ShareButton = ({message, title, url}: any) => {
-  const shareMessage = async () => {
+const RnShare = ({message}: any) => {
+  const CustomShare = async () => {
+    const myCustomShare = {
+      message: message || 'This is test message',
+    };
     try {
-      const result: any = await Share.open({
-        message: message,
-        title: title,
-        url: url,
-      });
-      if (result.action === Share?.sharedAction) {
-        if (result.activityType) {
-          console.log(`Shared via ${result.activityType}`);
-        } else {
-          console.log('Shared');
-        }
-      } else if (result.action === Share.dismissedAction) {
-        console.log('Dismissed');
-      }
+      const ShareResponse = await Share.open(myCustomShare)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          err && console.log(err);
+        });
+      console.log('share response', ShareResponse);
     } catch (error) {
-      console.log(`Error sharing: ${error.message}`);
+      console.log('error at share', error);
     }
   };
-
   return (
-    <TouchableOpacity onPress={shareMessage}>
-      <Text>Share</Text>
-    </TouchableOpacity>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <TouchableOpacity onPress={CustomShare}>
+        <Text>RnShare</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
-export default ShareButton;
+export default RnShare;
+
+const styles = StyleSheet.create({});

@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import Video from 'react-native-video';
+import Share from 'react-native-share';
 import Colors from '../../themes/colors';
 import {vh, vw} from '../../utils/dimensions';
 import {useRoute} from '@react-navigation/native';
@@ -15,6 +15,8 @@ import renderData from '../../utils/constantData';
 import CustomCard from '../../component/CustomCard';
 import localeImage from '../../utils/localeInImage';
 import {localeString} from '../../utils/localString';
+import VideoPlayerComponent from '../../component/videoComponet';
+import ShimmerForVideoPlayer from '../../component/CustomShimmer/ShimmerForVideoPlayer';
 
 /**
  * @metaData data
@@ -59,6 +61,16 @@ const VideoPlayer = () => {
   let backData = route?.params;
   const [videoUri, setVideoUri] = useState(backData?.renderdata?.sources);
   let myNewData = renderData.filter((item: any) => item?.sources !== videoUri);
+  const [data, setData] = useState<any>();
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setData(renderData);
+      setLoading(false);
+    }, 2000);
+  }, []);
 
   /**
    *
@@ -77,20 +89,65 @@ const VideoPlayer = () => {
     );
   };
 
+  const CustomShare = async () => {
+    const myCustomShare = {
+      message: 'This is test message',
+    };
+    try {
+      const ShareResponse = await Share.open(myCustomShare)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          err && console.log(err);
+        });
+      console.log('share response', ShareResponse);
+    } catch (error) {
+      console.log('error at share', error);
+    }
+  };
+
+  const onPresShare = (id: any) => {
+    console.log('item', id);
+    if (id === 3) {
+      CustomShare();
+    } else {
+      console.log('not share');
+    }
+  };
+
   /**
    *
    * @_buttonsRenderItem componnet
    * @description return feature button
    */
-
-  const _buttonsRenderItem = (item: any) => (
-    <View style={styles.itemContainer}>
-      <TouchableOpacity>
+  const _buttonsRenderItem = (item: any, index: number) => (
+    <View key={index} style={styles.itemContainer}>
+      <TouchableOpacity onPress={() => onPresShare(item.id)}>
         <Image style={styles.renderButtonImageStyle} source={item.image} />
       </TouchableOpacity>
       <Text style={styles.itemText}>{item.title}</Text>
     </View>
   );
+
+  /**
+   *
+   * @renderEmptyComponent  component
+   * @description renturn shimmer effect
+   */
+  const renderEmptyComponent = () => {
+    if (loading) {
+      // Show shimmer effect while data is being loaded
+      return <ShimmerForVideoPlayer />;
+    } else {
+      // Show message if there is no data
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>No data available</Text>
+        </View>
+      );
+    }
+  };
 
   /**
    *
@@ -165,15 +222,7 @@ const VideoPlayer = () => {
 
   return (
     <View style={styles.mainContainerStyle}>
-      <Video
-        paused={true}
-        resizeMode={'cover'}
-        style={{width: '100%', height: 200}}
-        source={{
-          uri: videoUri,
-        }}
-        controls
-      />
+      <VideoPlayerComponent source={{uri: videoUri}} />
       <FlatList
         bounces={false}
         renderItem={_renderItem}
@@ -181,6 +230,7 @@ const VideoPlayer = () => {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={_listHeaderComponent}
         contentContainerStyle={{paddingBottom: 20}}
+        ListEmptyComponent={renderEmptyComponent}
         keyExtractor={item => item?.id?.toString()}
       />
     </View>
@@ -314,16 +364,13 @@ const styles = StyleSheet.create({
     marginTop: vh(15),
     fontWeight: 'bold',
   },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
 });
-
-{
-  /* <Video
-        paused={play}
-        resizeMode="contain"
-        style={{height: 200, width: '100%'}}
-        source={{
-          uri: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-        }}
-      />
-      <Button title="play" onPress={() => setPlay(!play)} /> */
-}
