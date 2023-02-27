@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
+import {hitSlop} from '../../utils/constant';
 
 interface Props {
   onPress?: any;
@@ -20,7 +21,10 @@ const HeaderNavigation = (props: Props) => {
   return (
     <View style={styles.mainViewStyle}>
       <SafeAreaView />
-      <TouchableOpacity activeOpacity={0.7} style={styles.touchStyle}>
+      <TouchableOpacity
+        hitSlop={hitSlop}
+        activeOpacity={0.7}
+        style={styles.touchStyle}>
         <Image source={localeImage.back} style={styles.imageStyle} />
       </TouchableOpacity>
       <Text style={styles.screenTextStyle}>

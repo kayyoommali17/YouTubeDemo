@@ -11,6 +11,7 @@ import {
 import React from 'react';
 import {vw} from '../../utils/dimensions';
 import localeImage from '../../utils/localeInImage';
+import {hitSlop} from '../../utils/constant';
 interface ImageProps {
   source: ImageSourcePropType;
   imageStyle?: StyleProp<ImageStyle>;
@@ -20,10 +21,10 @@ interface ImageProps {
 const TouchableImage = (props: ImageProps) => {
   return (
     <TouchableOpacity
+      hitSlop={hitSlop}
       activeOpacity={0.7}
       onPress={props.onPress}
-      style={[props.touchableStyle]}
-      hitSlop={{top: 20, left: 20, bottom: 20, right: 20}}>
+      style={[props.touchableStyle]}>
       <Image
         style={props.imageStyle || styles.imagestyle}
         source={props.source || localeImage.play}

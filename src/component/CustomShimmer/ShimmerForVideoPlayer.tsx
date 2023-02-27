@@ -1,65 +1,61 @@
 import React from 'react';
-import Shimmering from './shimmering';
+import Colors from '../../themes/colors';
 import {vh, vw} from '../../utils/dimensions';
-import {Dimensions, StyleSheet, View, FlatList} from 'react-native';
-
+import {Dimensions, StyleSheet, View} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
+const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
 const {width: screenWidth} = Dimensions.get('screen');
 const width = screenWidth * 0.92 - vh(30);
-const list = new Array(10).fill(undefined).map((val, index) => ({
-  id: index,
-  name: 'name',
-}));
+var array = [1, 2, 3, 4, 5];
 const ShimmerForVideoPlayer = () => {
-  /**
-   *
-   * @renderItem function that returns a component
-   * @returns uniqueness  component
-   */
-  const renderItem = () => {
-    return (
-      <View style={styles.profileWrapper}>
-        <Shimmering wrapperStyle={styles.titleAndViewStyle} />
-        <Shimmering wrapperStyle={styles.descriptionShimmerStyle} />
-        <View style={styles.innerContainerStyle}>
-          <Shimmering wrapperStyle={styles.renderButtomShimmerStyle} />
-          <Shimmering wrapperStyle={styles.renderButtomShimmerStyle} />
-          <Shimmering wrapperStyle={styles.renderButtomShimmerStyle} />
-          <Shimmering wrapperStyle={styles.renderButtomShimmerStyle} />
-          <Shimmering wrapperStyle={styles.renderButtomShimmerStyle} />
-        </View>
-        <View style={styles.channelViewStyle}>
-          <Shimmering wrapperStyle={styles.profileShimmerStyle} />
-          <Shimmering wrapperStyle={styles.channelShimmerStyle} />
-          <Shimmering wrapperStyle={styles.subscribeButtonSimmerStyle} />
+  return (
+    <View style={styles.profileWrapper}>
+      <ShimmerPlaceholder style={styles.titleAndViewStyle} />
+      <ShimmerPlaceholder style={styles.descriptionShimmerStyle} />
+      <View style={styles.innerContainerStyle}>
+        {array.map(index => {
+          return (
+            <ShimmerPlaceholder
+              key={index}
+              style={styles.renderButtomShimmerStyle}
+            />
+          );
+        })}
+      </View>
+      <View style={styles.channelViewStyle}>
+        <ShimmerPlaceholder style={styles.profileShimmerStyle} />
+        <ShimmerPlaceholder style={styles.channelShimmerStyle} />
+        <ShimmerPlaceholder style={styles.subscribeButtonSimmerStyle} />
+      </View>
+      <View style={styles.commentViewStyle}>
+        <ShimmerPlaceholder
+          style={[styles.titleAndViewStyle, {height: vh(18)}]}
+        />
+        <View style={styles.commentShimmerStyle}>
+          <ShimmerPlaceholder style={styles.commetProfileShimmerStyle} />
+          <ShimmerPlaceholder
+            style={[
+              styles.channelShimmerStyle,
+              {
+                width: width * 0.9,
+              },
+            ]}
+          />
         </View>
       </View>
-    );
-  };
-
-  /**
-   *
-   * @keyExtractor Function
-   * @returns uniqueness
-   */
-  const keyExtractor = (item: any) => item?.id?.toString();
-
-  return (
-    <FlatList
-      data={list}
-      renderItem={renderItem}
-      style={styles.container}
-      keyExtractor={keyExtractor}
-    />
+      <ShimmerPlaceholder style={styles.videoPlayerStyle} />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: vw(20),
   },
   profileWrapper: {
-    marginTop: vh(30),
+    marginTop: vh(0),
+    marginHorizontal: vw(20),
   },
   descriptionShimmerStyle: {
     width: '100%',
@@ -69,15 +65,25 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: vh(10),
     marginTop: vh(10),
   },
+  videoPlayerStyle: {
+    width: '100%',
+    height: vh(200),
+    borderRadius: vh(10),
+    borderTopEndRadius: vh(10),
+    borderTopLeftRadius: vh(10),
+    marginTop: vh(10),
+  },
   innerContainerStyle: {
-    marginTop: vh(20),
-    marginVertical: vh(10),
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   profileShimmerStyle: {
+    width: vh(40),
+    height: vh(40),
+    borderRadius: vh(20),
+  },
+  commetProfileShimmerStyle: {
     width: vh(30),
-    marginTop: vh(15),
     height: vh(30),
     borderRadius: vh(15),
   },
@@ -85,14 +91,12 @@ const styles = StyleSheet.create({
     height: vh(25),
     width: width * 0.5,
     borderRadius: vh(5),
-    marginTop: vh(15),
     marginLeft: vh(10),
   },
   subscribeButtonSimmerStyle: {
     height: vh(25),
     width: width * 0.3,
     borderRadius: vh(5),
-    marginTop: vh(15),
     marginLeft: vh(40),
   },
   renderButtomShimmerStyle: {
@@ -106,10 +110,31 @@ const styles = StyleSheet.create({
     width: width * 0.5,
     borderRadius: vh(5),
     marginLeft: vh(3),
+    marginTop: vh(10),
   },
   channelViewStyle: {
+    borderTopWidth: 1,
+    marginTop: vh(10),
+    borderBottomWidth: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingVertical: vh(10),
+    justifyContent: 'center',
+    marginHorizontal: vw(-20),
+    borderColor: Colors.lightGrey,
+  },
+  commentViewStyle: {
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    paddingVertical: vh(10),
+    marginHorizontal: vw(-20),
+    paddingHorizontal: vw(20),
+    borderColor: Colors.lightGrey,
+  },
+  commentShimmerStyle: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingTop: vh(15),
   },
 });
 

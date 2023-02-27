@@ -1,6 +1,7 @@
 import {vh} from '../../utils/dimensions';
 import React, {useEffect, useState} from 'react';
 import routesNames from '../../utils/routesNames';
+import renderData from '../../utils/constantData';
 import CustomCard from '../../component/CustomCard';
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -10,15 +11,13 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import renderData from '../../utils/constantData';
-import ShimmerApp from '../../component/CustomShimmer/Shimmer';
+import SkelTon from '../../component/CustomShimmer/ShimmerSkelton';
+
 const PAGE_SIZE = 3;
-const TOTAL_ITEMS = 10;
 const VideoRenderScreen = () => {
+  const [page, setPage] = useState(1);
   const navigation = useNavigation<any>();
   const [data, setData] = useState<any>([]);
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
   const [shimmerLoading, setShimmerLoading] = useState(true);
 
   useEffect(() => {
@@ -27,19 +26,20 @@ const VideoRenderScreen = () => {
       setData(renderData);
       setShimmerLoading(false);
     }, 2000);
-
-    setTimeout(() => {
-      const startIndex = (page - 1) * PAGE_SIZE;
-      const endIndex = Math.min(startIndex + PAGE_SIZE, TOTAL_ITEMS);
-      const pageItems = Array.from({length: endIndex - startIndex}, (_, i) => ({
-        id: startIndex + i + 1,
-        name: `Item ${startIndex + i + 1}`,
-      }));
-
-      setIsLoading(false);
-      setData([...data, ...pageItems]);
-    }, 1000);
   }, []);
+
+  /**
+   * @fetchMoreData Function
+   * @description setting page after 100
+   */
+  const fetchMoreData = () => {
+    setTimeout(() => {
+      setPage(page + 1);
+    }, 1000);
+  };
+
+  const shouldShowLoader = renderData.length > page * PAGE_SIZE;
+
   /**
    *
    * @_renderItem component
@@ -68,7 +68,7 @@ const VideoRenderScreen = () => {
   const renderEmptyComponent = () => {
     if (shimmerLoading) {
       // Show shimmer effect while data is being loaded
-      return <ShimmerApp />;
+      return <SkelTon />;
     } else {
       // Show message if there is no data
       return (
@@ -84,30 +84,26 @@ const VideoRenderScreen = () => {
    * @returns loder to pagination
    */
   const renderFooter = () => {
-    if (!isLoading) return null;
     return (
-      <View style={{paddingVertical: 20}}>
+      <View style={styles.loaderContainer}>
         <ActivityIndicator animating size="large" />
       </View>
     );
   };
 
-  const handleLoadMore = () => {
-    setPage(page + 1);
-  };
   return (
     <View style={styles.mainContainerStyle}>
       <FlatList
-        data={data}
         renderItem={_renderItem}
         style={{marginBottom: 20}}
         onEndReachedThreshold={0.1}
-        onEndReached={handleLoadMore}
-        ListFooterComponent={renderFooter}
+        onEndReached={fetchMoreData}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={renderEmptyComponent}
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={{paddingBottom: 20}}
+        data={data.slice(0, (page + 1) * PAGE_SIZE)}
+        ListFooterComponent={shouldShowLoader ? renderFooter : null}
       />
     </View>
   );
@@ -128,5 +124,10 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  loaderContainer: {
+    paddingVertical: 20,
+    borderTopWidth: 1,
+    borderColor: '#CED0CE',
   },
 });

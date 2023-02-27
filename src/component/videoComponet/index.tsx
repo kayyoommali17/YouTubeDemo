@@ -39,7 +39,7 @@ const BUFFER_CONFIG: BufferConfig = {
   bufferForPlaybackAfterRebufferMs: 5000,
 };
 const VideoPlayerComponent = (props: Props) => {
-  const timeout = useRef<any>([]);
+  const clearTime = useRef<any>([]);
   const [paused, setPaused] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setcurrentTime] = useState(0);
@@ -70,14 +70,18 @@ const VideoPlayerComponent = (props: Props) => {
   };
 
   React.useEffect(() => {
-    const timeout1 = setTimeout(() => {
+    const firstTime = setTimeout(() => {
       setShowIcon(false);
-    }, 5000);
-    timeout.current.push(timeout1);
+    }, 3000);
+    clearTime.current.push(firstTime);
     return () => {
       setPaused(true);
     };
   }, []);
+
+  React.useEffect(() => {
+    setPaused(false);
+  }, [props.source]);
 
   /**
    * @description as screen render setting oreintation
@@ -91,15 +95,16 @@ const VideoPlayerComponent = (props: Props) => {
     });
     Orientation.addLockListener(orientation => setOrientation(orientation));
     return () => {
-      Orientation.removeLockListener(handleFullScreen);
+      Orientation.unlockAllOrientations();
+      Orientation.removeLockListener(handleOreinTation);
     };
   }, []);
 
   /**
-   * @handleFullScreen Function
+   * @handleOreinTation Function
    * @description handle fullscreen mode
    */
-  const handleFullScreen = () => {
+  const handleOreinTation = () => {
     if (currOrientation.includes('LANDSCAPE')) {
       Orientation.lockToPortrait();
       setVideoStyle({
@@ -124,8 +129,8 @@ const VideoPlayerComponent = (props: Props) => {
    * @description to clear timeOut
    */
   const clearTimeOut = () => {
-    while (timeout?.current?.length) {
-      clearTimeout(timeout?.current?.pop());
+    while (clearTime?.current?.length) {
+      clearTimeout(clearTime?.current?.pop());
     }
   };
 
@@ -136,17 +141,12 @@ const VideoPlayerComponent = (props: Props) => {
   const _skipForward = () => {
     videoRef.seek(currentTime + 10);
     setShowIcon(true);
-    // while (timeout.current.length) {
-    //   clearTimeout(timeout.current.pop());
-    // }
     clearTimeOut();
-    const timeout3 = setTimeout(() => {
+    const secondTime = setTimeout(() => {
       setShowIcon(false);
     }, 3000);
-    timeout.current.push(timeout3);
+    clearTime.current.push(secondTime);
   };
-
-  // const onPressIcons = () => {
 
   // };
   /**
@@ -156,19 +156,15 @@ const VideoPlayerComponent = (props: Props) => {
   const _skipBackward = () => {
     videoRef.seek(currentTime - 10);
     setShowIcon(true);
-    // while (timeout.current.length) {
-    //   clearTimeout(timeout.current.pop());
-    // }
     clearTimeOut();
-
-    const timeout3 = setTimeout(() => {
+    const thirdTime = setTimeout(() => {
       setShowIcon(false);
     }, 3000);
-    timeout.current.push(timeout3);
+    clearTime.current.push(thirdTime);
   };
 
   const onSlidindStart = () => {
-    // while (timeout.current.length) {
+    // while (clearTime.current.length) {
     //   clearTimeout(timeout?.current?.pop());
     // }
     clearTimeOut();
@@ -182,10 +178,10 @@ const VideoPlayerComponent = (props: Props) => {
     value = Array.isArray(value) ? value[0] : value;
     setcurrentTime(value);
     videoRef.seek(value);
-    const timeout6 = setTimeout(() => {
+    const sixthTimer = setTimeout(() => {
       setShowIcon(false);
     }, 3000);
-    timeout?.current?.push(timeout6);
+    clearTime?.current?.push(sixthTimer);
   };
 
   /**
@@ -202,19 +198,15 @@ const VideoPlayerComponent = (props: Props) => {
    * @description seting toggle
    */
   const _togglePlayPaused = () => {
+    clearTimeOut();
     setPaused(prev => {
       if (prev === false) {
-        // while (timeout.current.length) {
-        //   clearTimeout(timeout.current.pop());
-        // }
-        clearTimeOut();
-
         setShowIcon(true);
       } else {
-        const timeout5 = setTimeout(() => {
+        const fifthTimer = setTimeout(() => {
           setShowIcon(false);
         }, 3000);
-        timeout?.current?.push(timeout5);
+        clearTime?.current?.push(fifthTimer);
       }
       return !prev;
     });
@@ -246,7 +238,7 @@ const VideoPlayerComponent = (props: Props) => {
    */
   const _renderActivityIndicator = () => {
     return (
-      <View style={styles.activityIndicator}>
+      <View style={[styles.activityIndicator, {}]}>
         <ActivityIndicator size="large" color="#fff" />
       </View>
     );
@@ -258,7 +250,7 @@ const VideoPlayerComponent = (props: Props) => {
       setShowIcon(false);
     }, 3000);
     console.log('jhihihi', timeout2);
-    timeout.current.push(timeout2);
+    clearTime.current.push(timeout2);
   };
 
   return (
@@ -269,11 +261,14 @@ const VideoPlayerComponent = (props: Props) => {
         resizeMode="cover"
         onBuffer={_onBuffer}
         source={props.source}
+        playInBackground={false}
+        playWhenInactive={false}
         onLoadStart={_onLoadStart}
         fullscreenAutorotate={true}
         fullscreenOrientation={'all'}
         bufferConfig={BUFFER_CONFIG}
         ref={(ref: any) => setVideoRef(ref)}
+        fullscreen={isOreintation ? true : false}
         style={[videoStyle, props.videoStyles]}
         onProgress={value => setcurrentTime(value.currentTime)}
       />
@@ -288,27 +283,29 @@ const VideoPlayerComponent = (props: Props) => {
         ]}>
         {showIcon && (
           <>
-            <TouchableImage
-              onPress={() => {
-                props.onPressBackButton();
-                setPaused(true);
-              }}
-              source={localeImage.back}
-              imageStyle={[
-                styles.backImageStyle,
-                {
-                  height: dynamicHieghtWidth,
-                  width: dynamicHieghtWidth,
-                },
-              ]}
-              touchableStyle={[
-                styles.backButtonStyle,
-                {
-                  top: isOreintation ? vh(20) : vh(10),
-                  left: isOreintation ? vh(20) : vh(10),
-                },
-              ]}
-            />
+            {!currOrientation.includes('LANDSCAPE') ? (
+              <TouchableImage
+                onPress={() => {
+                  props.onPressBackButton();
+                  setPaused(true);
+                }}
+                source={localeImage.back}
+                imageStyle={[
+                  styles.backImageStyle,
+                  {
+                    height: dynamicHieghtWidth,
+                    width: dynamicHieghtWidth,
+                  },
+                ]}
+                touchableStyle={[
+                  styles.backButtonStyle,
+                  {
+                    top: isOreintation ? vh(20) : vh(10),
+                    left: isOreintation ? vh(20) : vh(10),
+                  },
+                ]}
+              />
+            ) : null}
             <View style={styles.skipAndPausedStyle}>
               <TouchableImage
                 onPress={_skipBackward}
@@ -321,17 +318,19 @@ const VideoPlayerComponent = (props: Props) => {
                   },
                 ]}
               />
-              <TouchableImage
-                onPress={_togglePlayPaused}
-                imageStyle={[
-                  styles.backImageStyle,
-                  {
-                    height: dynamicHieghtWidth,
-                    width: dynamicHieghtWidth,
-                  },
-                ]}
-                source={paused ? localeImage.play : localeImage.pause}
-              />
+              {!isLoading && (
+                <TouchableImage
+                  onPress={_togglePlayPaused}
+                  imageStyle={[
+                    styles.backImageStyle,
+                    {
+                      height: dynamicHieghtWidth,
+                      width: dynamicHieghtWidth,
+                    },
+                  ]}
+                  source={paused ? localeImage.play : localeImage.pause}
+                />
+              )}
               <TouchableImage
                 onPress={_skipForward}
                 source={localeImage.skipFrwd}
@@ -365,8 +364,12 @@ const VideoPlayerComponent = (props: Props) => {
               style={[
                 styles.timeStyleText,
                 {
-                  left: isOreintation ? vw(40) : vw(20),
-                  bottom: isOreintation ? vw(20) : vw(12),
+                  left: isOreintation ? vw(40) : vw(16),
+                  bottom: isOreintation
+                    ? vw(20)
+                    : Platform.OS == 'android'
+                    ? vw(10)
+                    : vh(15),
                 },
               ]}>
               {secondToHoursMinutesSeconds(currentTime)}
@@ -374,11 +377,16 @@ const VideoPlayerComponent = (props: Props) => {
               {secondToHoursMinutesSeconds(duration)}
             </Text>
             <TouchableOpacity
-              onPress={handleFullScreen}
+              hitSlop={hitSlop}
+              onPress={handleOreinTation}
               style={[
                 styles.fullNexitIconStyle,
                 {
-                  bottom: isOreintation ? vh(20) : vh(10),
+                  bottom: isOreintation
+                    ? vh(20)
+                    : Platform.OS == 'android'
+                    ? vh(8)
+                    : vh(15),
                   right: isOreintation ? vh(40) : vh(15),
                 },
               ]}>
@@ -446,8 +454,8 @@ const styles = StyleSheet.create({
   activityIndicator: {
     top: 0,
     left: 0,
-    right: 0,
-    bottom: 0,
+    right: 7,
+    bottom: 9,
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',

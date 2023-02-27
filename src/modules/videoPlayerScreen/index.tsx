@@ -1,57 +1,21 @@
-import {
-  FlatList,
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import React, {useState} from 'react';
-import Share from 'react-native-share';
+import React, {useRef, useState} from 'react';
 import Colors from '../../themes/colors';
 import {vh, vw} from '../../utils/dimensions';
 import renderData from '../../utils/constantData';
 import CustomCard from '../../component/CustomCard';
 import localeImage from '../../utils/localeInImage';
-import {localeString} from '../../utils/localString';
+import {FlatList, StyleSheet, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import VideoPlayerComponent from '../../component/videoComponet';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import ListHeaderComponent from '../../component/headerComponent/index';
 import ShimmerForVideoPlayer from '../../component/CustomShimmer/ShimmerForVideoPlayer';
-
+import LinearGradient from 'react-native-linear-gradient';
+import ShimmerApp from '../../component/CustomShimmer/Shimmer';
+import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
+const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
 /**
- * @metaData data
- * @description render button of like,dislike and etc.
- */
-const metaData = [
-  {
-    id: 1,
-    title: '50',
-    image: localeImage.like,
-  },
-  {
-    id: 2,
-    title: '50',
-    image: localeImage.dislike,
-  },
-  {
-    id: 3,
-    title: 'Share',
-    image: localeImage.share,
-  },
-  {
-    id: 4,
-    title: 'Favorite',
-    image: localeImage.favorite,
-  },
-  {
-    id: 5,
-    title: 'Donate',
-    image: localeImage.donate,
-  },
-];
-
-/**
+ *
  *
  * @VideoPlayer componnet
  * @description return simillar videos
@@ -60,85 +24,58 @@ const metaData = [
 const VideoPlayer = () => {
   const route = useRoute<any>();
   let backData = route?.params;
+  const listRef = useRef<any>(null);
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
-  const [details, setDetails] = useState(backData?.renderdata);
   const [shimmerLoading, setShimmerLoading] = useState(true);
-  const [title, setTitle] = useState<any>(backData?.renderdata?.title);
+  const [details, setDetails] = useState(backData?.renderdata);
+
   let myNewData = renderData.filter(
     (item: any) => item?.sources !== details?.sources,
   );
+
+  /**
+   *
+   */
   React.useEffect(() => {
     // Simulate shimmerLoading data
     setTimeout(() => {
       setShimmerLoading(false);
-    }, 1200);
+    }, 1000);
   }, [details]);
+  console.log('re render');
 
   /**
    *
    * @_renderItem component
    * @description return cardto the video list
    */
+
   const _renderItem = ({item}: any) => {
+    // if (!shimmerLoading) {
+    //   return (
+
+    //   );
+    // }
+    const onPress = () => {
+      setDetails(item);
+      setShimmerLoading(true);
+      listRef?.current?.scrollToOffset({
+        offset: 0,
+        animated: true,
+      });
+      setTimeout(() => {
+        setShimmerLoading(false);
+      }, 2000);
+    };
     return (
-      <View>
-        <CustomCard
-          onPress={() => {
-            setDetails(item);
-          }}
-          videoTitle={item?.title}
-          source={{uri: item?.thumb}}
-        />
-      </View>
+      <CustomCard
+        onPress={onPress}
+        videoTitle={item?.title}
+        source={{uri: item?.thumb}}
+      />
     );
   };
-
-  /**
-   * @CustomShare Function
-   * @description returns react native share
-   */
-  const CustomShare = async () => {
-    const myCustomShare = {
-      message: 'This is test message',
-    };
-    try {
-      const ShareResponse = await Share.open(myCustomShare)
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => {
-          err && console.log(err);
-        });
-      console.log('share response', ShareResponse);
-    } catch (error) {
-      console.log('error at share', error);
-    }
-  };
-
-  /**
-   * @onPresShare Function
-   * @description onPress to active react native share
-   */
-  const onPresShare = (id: any) => {
-    if (id === 3) {
-      CustomShare();
-    } else {
-      console.log('not share');
-    }
-  };
-
-  /**
-   * @_buttonsRenderItem componnet
-   * @description return feature button
-   */
-  const _buttonsRenderItem = (item: any, index: number) => (
-    <View key={index} style={styles.itemContainer}>
-      <TouchableOpacity onPress={() => onPresShare(item.id)}>
-        <Image style={styles.renderButtonImageStyle} source={item.image} />
-      </TouchableOpacity>
-      <Text style={styles.itemText}>{item.title}</Text>
-    </View>
-  );
 
   /**
    *
@@ -149,72 +86,18 @@ const VideoPlayer = () => {
     if (shimmerLoading) {
       return <ShimmerForVideoPlayer />;
     } else {
-      return (
-        <View>
-          {<Text style={styles.videoTitleStyle}>{details?.subtitle}</Text>}
-          <Text style={styles.metaInfoStyle}>{localeString.views}</Text>
-          <Text style={styles.description}>{details?.description}</Text>
-          <View style={styles.listContainer}>
-            {metaData.map(_buttonsRenderItem)}
-          </View>
-          <View style={styles.mainSubsViewStyle}>
-            <View style={styles.channelDetailsViewStyle}>
-              <Image
-                resizeMode="cover"
-                style={styles.channelImageSTyle}
-                source={{uri: details?.thumb}}
-              />
-              <View style={styles.textViewStyle}>
-                <Text style={styles.channelNameStyle}>{details?.title}</Text>
-                <Text style={styles.subsTextStyle}>
-                  {localeString.totalSubs}
-                </Text>
-              </View>
-            </View>
-            <TouchableOpacity style={styles.subsButtonStyle}>
-              <Text style={styles.subsButtonTextStyle}>
-                {localeString.subs}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.commentMainViewStyle}>
-            <View style={styles.commentInnerViewStyle}>
-              <View style={styles.commentsTotalStyle}>
-                <Text style={styles.commentTextStyle}>
-                  {localeString.totalComment}
-                </Text>
-                <Text style={styles.commenntNumberStyle}>
-                  {localeString.allCommet}
-                </Text>
-              </View>
-              <Image
-                resizeMode="contain"
-                source={localeImage.unfold}
-                style={styles.commentImageStyle}
-              />
-            </View>
-            <View style={styles.userCommentViewStyle}>
-              <Image
-                resizeMode="cover"
-                style={styles.commentImageStyle}
-                source={localeImage.cahannelImage}
-              />
-              <Text style={styles.userCommentStyle}>
-                {localeString.comment}
-              </Text>
-            </View>
-          </View>
-          <Text style={styles.smillarVideoTextStyle}>
-            {localeString.smillarVideo}
-          </Text>
-        </View>
-      );
+      return <ListHeaderComponent details={details} />;
     }
   };
 
   return (
-    <View style={styles.mainContainerStyle}>
-      <SafeAreaView></SafeAreaView>
+    <View
+      style={[
+        styles.mainContainerStyle,
+        {
+          paddingTop: insets.top,
+        },
+      ]}>
       <VideoPlayerComponent
         onPressBackButton={() => {
           navigation.goBack();
@@ -222,13 +105,15 @@ const VideoPlayer = () => {
         source={{uri: details?.sources}}
       />
       <FlatList
+        ref={listRef}
         bounces={false}
         renderItem={_renderItem}
-        data={myNewData.splice(0, 5)}
+        data={myNewData?.splice(0, 5)}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={_listHeaderComponent}
         contentContainerStyle={{paddingBottom: 20}}
         keyExtractor={item => item?.id?.toString()}
+        scrollEnabled={shimmerLoading ? false : true}
       />
     </View>
   );
@@ -245,24 +130,20 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: Colors.black,
     fontSize: vh(16),
-    marginHorizontal: vw(15),
     marginVertical: vh(10),
   },
   metaInfoStyle: {
     opacity: 0.7,
     color: Colors.black,
     fontSize: vh(16),
-    marginHorizontal: vw(15),
     marginBottom: vh(10),
   },
   description: {
-    marginHorizontal: vw(15),
     textAlign: 'justify',
   },
   listContainer: {
     marginTop: vh(20),
     flexDirection: 'row',
-    marginHorizontal: vh(15),
   },
   itemContainer: {
     alignItems: 'center',
@@ -280,6 +161,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     paddingVertical: vh(15),
     paddingHorizontal: vw(10),
+    marginHorizontal: vw(-20),
     borderColor: Colors.lightGrey,
     justifyContent: 'space-between',
   },
@@ -329,7 +211,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.lightGrey,
     paddingVertical: vh(10),
-    paddingHorizontal: vw(20),
+    paddingHorizontal: vw(15),
+    marginHorizontal: vw(-20),
   },
   commentInnerViewStyle: {
     flexDirection: 'row',

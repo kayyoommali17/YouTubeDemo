@@ -14,7 +14,8 @@ import {
 import React from 'react';
 import Colors from '../../themes/colors';
 import localeImage from '../../utils/localeInImage';
-import {vh, vw} from '../../utils/dimensions';
+import {SCREEN_WIDTH, vh, vw} from '../../utils/dimensions';
+import {hitSlop} from '../../utils/constant';
 interface Props {
   thumb?: any;
   channelName?: string;
@@ -30,11 +31,13 @@ const CustomCard = (props: Props) => {
     <TouchableOpacity
       activeOpacity={0.7}
       onPress={props.onPress}
+      hitSlop={hitSlop}
       style={[styles.cardTouchStyle, props.cardViewStyle]}>
       <Image
         style={[styles.cardImageStyle, props.cardImageeStyle]}
         source={props?.source || localeImage.happyWomen}
       />
+      <Image style={styles.PalyIconStyle} source={localeImage.play} />
       <Text style={styles.durationTextStyle}>{'5:50'}</Text>
       <Text style={[styles.videoTitleStyle, props.titleStyle]}>
         {props.videoTitle || 'How to make yourself happy?'}
@@ -85,7 +88,8 @@ const styles = StyleSheet.create({
     color: Colors.black,
     fontSize: vh(20),
     marginHorizontal: vw(15),
-    marginVertical: vh(10),
+    marginVertical: vh(4),
+    fontFamily: 'Poppins-Bold',
   },
   channelInfoViewStyle: {
     flexDirection: 'row',
@@ -104,12 +108,14 @@ const styles = StyleSheet.create({
     marginLeft: vw(10),
     color: Colors.black,
     fontSize: vh(16),
+    fontFamily: 'Poppins-Medium',
   },
   metaInfoStyle: {
-    opacity: 0.7,
+    opacity: 0.6,
     color: Colors.black,
-    fontSize: vh(16),
+    fontSize: vh(15),
     marginHorizontal: vw(15),
+    fontFamily: 'Poppins-Medium',
   },
   durationTextStyle: {
     right: vw(10),
@@ -117,5 +123,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     position: 'absolute',
     color: Colors.white,
+  },
+  PalyIconStyle: {
+    height: vw(30),
+    width: vw(30),
+    top: vh(80),
+    position: 'absolute',
+    resizeMode: 'contain',
+    left: SCREEN_WIDTH / 2 - 40,
   },
 });

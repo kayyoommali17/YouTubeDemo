@@ -2,17 +2,19 @@ import * as React from 'react';
 import MyTopTabs from './TopTapNavigator';
 import routesNames from '../utils/routesNames';
 import VideoPlayer from '../modules/videoPlayerScreen';
+import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {
   Image,
   StyleSheet,
   TouchableOpacity,
   GestureResponderEvent,
 } from 'react-native';
-import {vw} from '../utils/dimensions';
 import Colors from '../themes/colors';
+import {vw} from '../utils/dimensions';
+import {hitSlop} from '../utils/constant';
 import localeImage from '../utils/localeInImage';
+import TouchableImage from '../component/TouchImage';
 
 interface Props {
   onPress?: ((event: GestureResponderEvent) => void) | undefined;
@@ -20,15 +22,9 @@ interface Props {
 
 const Stack = createNativeStackNavigator();
 
-const headerIcon: any = (props: Props) => {
-  const navigation = useNavigation<any>();
+const headerIcon: any = () => {
   return (
-    <TouchableOpacity
-      activeOpacity={0.7}
-      style={styles.touchStyle}
-      onPress={() => navigation.goBack()}>
-      <Image source={localeImage.back} style={styles.imageStyle} />
-    </TouchableOpacity>
+    <TouchableImage imageStyle={styles.imageStyle} source={localeImage?.back} />
   );
 };
 
@@ -38,7 +34,7 @@ function AppNavigator() {
       <Stack.Navigator
         screenOptions={({route}) => ({
           headerLeft: headerIcon,
-          headerTitle: 'Favourites',
+          headerTitle: 'Favourite',
           headerShadowVisible: false,
           headerTitleAlign: 'center',
         })}>
@@ -47,8 +43,8 @@ function AppNavigator() {
           options={{
             headerShown: false,
           }}
-          name={routesNames.videoPlayer}
           component={VideoPlayer}
+          name={routesNames.videoPlayer}
         />
       </Stack.Navigator>
     </NavigationContainer>
