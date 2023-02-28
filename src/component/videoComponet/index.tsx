@@ -412,7 +412,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 1,
     height: vh(200),
-    alignContent: 'stretch',
   },
   backButtonStyle: {
     alignSelf: 'flex-start',
