@@ -81,14 +81,13 @@ const VideoPlayerComponent = (props: Props) => {
 
   React.useEffect(() => {
     setPaused(false);
-  }, [props.source]);
+  }, []);
 
   /**
    * @description as screen render setting oreintation
    */
   React.useEffect(() => {
     Orientation.getOrientation(orientation => {
-      console.log(orientation.includes('LANDSCAPE'));
       if (orientation.includes('LANDSCAPE')) {
         Orientation.lockToPortrait();
       }
@@ -118,7 +117,6 @@ const VideoPlayerComponent = (props: Props) => {
         width: '100%',
       });
     }
-    console.log('currrrr', currOrientation);
   };
 
   const isOreintation = currOrientation.includes('LANDSCAPE');
@@ -189,7 +187,6 @@ const VideoPlayerComponent = (props: Props) => {
    * @description seting duration
    */
   const _onLoad = (obj: any) => {
-    console.log('obg', obj);
     setDuration(obj.duration);
   };
 
@@ -217,11 +214,12 @@ const VideoPlayerComponent = (props: Props) => {
    * @description checking if buffering or not then setting loading activityindicator
    */
   const _onBuffer = ({isBuffering}: {isBuffering: boolean}) => {
-    if (isBuffering) {
-      setIsLoading(true);
-    } else {
-      setIsLoading(false);
-    }
+    setIsLoading(isBuffering);
+    // if (isBuffering) {
+    //   setIsLoading(true);
+    // } else {
+    //   setIsLoading(false);
+    // }
   };
 
   /**
@@ -249,7 +247,6 @@ const VideoPlayerComponent = (props: Props) => {
     const timeout2 = setTimeout(() => {
       setShowIcon(false);
     }, 3000);
-    console.log('jhihihi', timeout2);
     clearTime.current.push(timeout2);
   };
 
@@ -268,8 +265,8 @@ const VideoPlayerComponent = (props: Props) => {
         fullscreenOrientation={'all'}
         bufferConfig={BUFFER_CONFIG}
         ref={(ref: any) => setVideoRef(ref)}
-        fullscreen={isOreintation ? true : false}
         style={[videoStyle, props.videoStyles]}
+        fullscreen={isOreintation ? true : false}
         onProgress={value => setcurrentTime(value.currentTime)}
       />
 
@@ -414,6 +411,8 @@ const styles = StyleSheet.create({
     width: '100%',
     position: 'absolute',
     zIndex: 1,
+    height: vh(200),
+    alignContent: 'stretch',
   },
   backButtonStyle: {
     alignSelf: 'flex-start',

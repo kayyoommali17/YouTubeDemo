@@ -39,7 +39,6 @@ const VideoPlayer = () => {
       setShimmerLoading(false);
     }, 1000);
   }, [details]);
-  console.log('re render');
 
   /**
    *

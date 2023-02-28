@@ -1,10 +1,10 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
-import {vh, vw} from '../../utils/dimensions';
 import Colors from '../../themes/colors';
+import {hitSlop} from '../../utils/constant';
+import {vh, vw} from '../../utils/dimensions';
 import localeImage from '../../utils/localeInImage';
 import {localeString} from '../../utils/localString';
-import {hitSlop} from '../../utils/constant';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import Share from 'react-native-share';
 
@@ -89,7 +89,7 @@ const ListHeaderComponent = ({details}: any) => {
     </View>
   );
   return (
-    <View style={{marginHorizontal: vw(20)}}>
+    <View style={styles.mainContainerStyleX}>
       {<Text style={styles.videoTitleStyle}>{details?.subtitle}</Text>}
       <Text style={styles.metaInfoStyle}>{localeString.views}</Text>
       <Text numberOfLines={showMore ? 2 : undefined} style={styles.description}>
@@ -164,15 +164,11 @@ const styles = StyleSheet.create({
   videoTitleStyle: {
     fontWeight: '800',
     color: Colors.black,
-    fontSize: vh(16),
-    // marginHorizontal: vw(15),
     marginVertical: vh(10),
   },
   metaInfoStyle: {
     opacity: 0.7,
     color: Colors.black,
-    fontSize: vh(16),
-    // marginHorizontal: vw(15),
     marginBottom: vh(10),
   },
   description: {
@@ -181,7 +177,6 @@ const styles = StyleSheet.create({
   listContainer: {
     marginTop: vh(20),
     flexDirection: 'row',
-    // marginHorizontal: vh(15),
   },
   itemContainer: {
     alignItems: 'center',
@@ -281,5 +276,8 @@ const styles = StyleSheet.create({
     marginLeft: vw(20),
     marginTop: vh(15),
     fontWeight: 'bold',
+  },
+  mainContainerStyleX: {
+    marginHorizontal: vw(20),
   },
 });
