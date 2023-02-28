@@ -8,7 +8,6 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import VideoPlayerComponent from '../../component/videoComponet';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ListHeaderComponent from '../../component/ListheaderComponent/index';
-import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import ShimmerForVideoPlayer from '../../component/CustomShimmer/ShimmerForVideoPlayer';
 /**
  *

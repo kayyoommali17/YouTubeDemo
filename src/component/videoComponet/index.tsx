@@ -18,6 +18,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {hitSlop} from '../../utils/constant';
+import {useIsFocused} from '@react-navigation/native';
 
 interface Props {
   source: any;
@@ -46,6 +47,7 @@ const VideoPlayerComponent = (props: Props) => {
   const [videoRef, setVideoRef] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showIcon, setShowIcon] = useState<boolean>(false);
+  const isFocused = useIsFocused();
   const [currOrientation, setOrientation] = useState('PORTRAIT');
   const [videoStyle, setVideoStyle] = useState<any>({
     height: vh(200),
@@ -77,10 +79,6 @@ const VideoPlayerComponent = (props: Props) => {
     return () => {
       setPaused(true);
     };
-  }, []);
-
-  React.useEffect(() => {
-    setPaused(false);
   }, []);
 
   /**
@@ -117,6 +115,10 @@ const VideoPlayerComponent = (props: Props) => {
         width: '100%',
       });
     }
+  };
+
+  const playStateWhenFocused = () => {
+    return paused;
   };
 
   const isOreintation = currOrientation.includes('LANDSCAPE');
@@ -253,7 +255,6 @@ const VideoPlayerComponent = (props: Props) => {
   return (
     <View>
       <Video
-        paused={paused}
         onLoad={_onLoad}
         resizeMode="cover"
         onBuffer={_onBuffer}
@@ -268,6 +269,7 @@ const VideoPlayerComponent = (props: Props) => {
         style={[videoStyle, props.videoStyles]}
         fullscreen={isOreintation ? true : false}
         onProgress={value => setcurrentTime(value.currentTime)}
+        paused={isFocused === false ? true : playStateWhenFocused()}
       />
 
       <TouchableOpacity

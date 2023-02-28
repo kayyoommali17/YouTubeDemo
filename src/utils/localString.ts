@@ -1,6 +1,7 @@
 export const localeString = {
   allCommet: '32',
   subs: 'Subscribe',
+  subscribed: 'Subscribed',
   totalComment: 'Comments',
   totalSubs: '15K Subscribers',
   smillarVideo: 'Smillar Videos',

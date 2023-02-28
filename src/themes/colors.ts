@@ -4,6 +4,7 @@ const Colors = {
   white: '#ffffff',
   lightGrey: '#D9D9D9',
   tabColor: '#50E2E1',
+  grey: 'grey',
 };
 
 export default Colors;

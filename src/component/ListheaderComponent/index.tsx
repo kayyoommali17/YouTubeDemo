@@ -4,8 +4,14 @@ import {hitSlop} from '../../utils/constant';
 import {vh, vw} from '../../utils/dimensions';
 import localeImage from '../../utils/localeInImage';
 import {localeString} from '../../utils/localString';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-
+import {
+  Image,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Share from 'react-native-share';
 
 /**
@@ -41,6 +47,10 @@ const metaData = [
 ];
 const ListHeaderComponent = ({details}: any) => {
   const [showMore, setShowMore] = useState(true);
+  const [subsCribition, setsubsCribition] = useState({
+    isTrue: true,
+    vlaue: localeString.subs,
+  });
 
   /**
    * @CustomShare Function
@@ -88,6 +98,20 @@ const ListHeaderComponent = ({details}: any) => {
       <Text style={styles.itemText}>{item.title}</Text>
     </View>
   );
+
+  const onPress = () => {
+    if (subsCribition.isTrue) {
+      setsubsCribition({
+        isTrue: false,
+        vlaue: localeString.subscribed,
+      });
+    } else {
+      setsubsCribition({
+        isTrue: true,
+        vlaue: localeString.subs,
+      });
+    }
+  };
   return (
     <View style={styles.mainContainerStyleX}>
       {<Text style={styles.videoTitleStyle}>{details?.subtitle}</Text>}
@@ -118,8 +142,20 @@ const ListHeaderComponent = ({details}: any) => {
             <Text style={styles.subsTextStyle}>{localeString.totalSubs}</Text>
           </View>
         </View>
-        <TouchableOpacity hitSlop={hitSlop} style={styles.subsButtonStyle}>
-          <Text style={styles.subsButtonTextStyle}>{localeString.subs}</Text>
+
+        <TouchableOpacity
+          onPress={onPress}
+          activeOpacity={0.9}
+          hitSlop={hitSlop}
+          style={[
+            styles.subsButtonStyle,
+            {
+              backgroundColor: subsCribition.isTrue
+                ? Colors.tabColor
+                : Colors.grey,
+            },
+          ]}>
+          <Text style={styles.subsButtonTextStyle}>{subsCribition.vlaue}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.commentMainViewStyle}>
