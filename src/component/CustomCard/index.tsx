@@ -13,9 +13,9 @@ import {
 } from 'react-native';
 import React from 'react';
 import Colors from '../../themes/colors';
-import localeImage from '../../utils/localeInImage';
-import {SCREEN_WIDTH, vh, vw} from '../../utils/dimensions';
 import {hitSlop} from '../../utils/constant';
+import localeImage from '../../utils/localeInImage';
+import {DESIGN_WIDTH, vh, vw} from '../../utils/dimensions';
 interface Props {
   thumb?: any;
   channelName?: string;
@@ -30,17 +30,17 @@ const CustomCard = (props: Props) => {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
-      onPress={props.onPress}
+      onPress={props?.onPress}
       hitSlop={hitSlop}
-      style={[styles.cardTouchStyle, props.cardViewStyle]}>
+      style={[styles.cardTouchStyle, props?.cardViewStyle]}>
       <Image
-        style={[styles.cardImageStyle, props.cardImageeStyle]}
+        style={[styles.cardImageStyle, props?.cardImageeStyle]}
         source={props?.source || localeImage.happyWomen}
       />
       <Image style={styles.PalyIconStyle} source={localeImage.play} />
       <Text style={styles.durationTextStyle}>{'5:50'}</Text>
-      <Text style={[styles.videoTitleStyle, props.titleStyle]}>
-        {props.videoTitle || 'How to make yourself happy?'}
+      <Text style={[styles.videoTitleStyle, props?.titleStyle]}>
+        {props?.videoTitle || 'How to make yourself happy?'}
       </Text>
       <Text style={styles.metaInfoStyle}>
         {'94k views'}
@@ -84,12 +84,11 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   videoTitleStyle: {
-    fontWeight: '600',
+    fontSize: vh(16),
     color: Colors.black,
-    fontSize: vh(20),
+    marginVertical: vh(10),
     marginHorizontal: vw(15),
-    marginVertical: vh(4),
-    fontFamily: 'Poppins-Bold',
+    fontFamily: 'Poppins-SemiBold',
   },
   channelInfoViewStyle: {
     flexDirection: 'row',
@@ -130,6 +129,6 @@ const styles = StyleSheet.create({
     top: vh(80),
     position: 'absolute',
     resizeMode: 'contain',
-    left: SCREEN_WIDTH / 2 - 40,
+    left: DESIGN_WIDTH / 2 - 40,
   },
 });

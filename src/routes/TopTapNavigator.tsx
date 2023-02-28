@@ -1,13 +1,11 @@
 import React from 'react';
-import Video from '../modules/videoRenderScreen';
 import Colors from '../themes/colors';
 import Articles from '../modules/articles';
 import Channels from '../modules/channels';
 import {normalize} from '../utils/dimensions';
 import routesNames from '../utils/routesNames';
-import VideoRenderScreen from '../modules/videoRenderScreen';
-import VideoPlayer from '../modules/videoPlayerScreen';
 import {StyleSheet, Text, View} from 'react-native';
+import VideoRenderScreen from '../modules/videoRenderScreen';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 const Tab = createMaterialTopTabNavigator();
@@ -17,8 +15,6 @@ export default function MyTopTabs() {
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarPressColor: Colors.white,
-        // tabBarOnPress
-
         tabBarLabel: ({focused}) => {
           return (
             <View

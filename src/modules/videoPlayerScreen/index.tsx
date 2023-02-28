@@ -3,17 +3,13 @@ import Colors from '../../themes/colors';
 import {vh, vw} from '../../utils/dimensions';
 import renderData from '../../utils/constantData';
 import CustomCard from '../../component/CustomCard';
-import localeImage from '../../utils/localeInImage';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import VideoPlayerComponent from '../../component/videoComponet';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import ListHeaderComponent from '../../component/headerComponent/index';
-import ShimmerForVideoPlayer from '../../component/CustomShimmer/ShimmerForVideoPlayer';
-import LinearGradient from 'react-native-linear-gradient';
-import ShimmerApp from '../../component/CustomShimmer/Shimmer';
+import ListHeaderComponent from '../../component/ListheaderComponent/index';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
-const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
+import ShimmerForVideoPlayer from '../../component/CustomShimmer/ShimmerForVideoPlayer';
 /**
  *
  *

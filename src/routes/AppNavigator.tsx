@@ -1,20 +1,15 @@
 import * as React from 'react';
-import MyTopTabs from './TopTapNavigator';
-import routesNames from '../utils/routesNames';
-import VideoPlayer from '../modules/videoPlayerScreen';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  GestureResponderEvent,
-} from 'react-native';
 import Colors from '../themes/colors';
 import {vw} from '../utils/dimensions';
-import {hitSlop} from '../utils/constant';
+import MyTopTabs from './TopTapNavigator';
+import routesNames from '../utils/routesNames';
 import localeImage from '../utils/localeInImage';
 import TouchableImage from '../component/TouchImage';
+import VideoPlayer from '../modules/videoPlayerScreen';
+import {NavigationContainer} from '@react-navigation/native';
+import {StyleSheet, GestureResponderEvent} from 'react-native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import HeaderNavigation from '../component/Header/Header';
 
 interface Props {
   onPress?: ((event: GestureResponderEvent) => void) | undefined;
@@ -23,21 +18,19 @@ interface Props {
 const Stack = createNativeStackNavigator();
 
 const headerIcon: any = () => {
-  return (
-    <TouchableImage imageStyle={styles.imageStyle} source={localeImage?.back} />
-  );
+  return <HeaderNavigation />;
 };
 
 function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        screenOptions={({route}) => ({
+        screenOptions={{
           headerLeft: headerIcon,
           headerTitle: 'Favourite',
-          headerShadowVisible: false,
           headerTitleAlign: 'center',
-        })}>
+          headerShadowVisible: false,
+        }}>
         <Stack.Screen name={routesNames.topTaps} component={MyTopTabs} />
         <Stack.Screen
           options={{

@@ -9,32 +9,33 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  StyleProp,
+  ImageStyle,
 } from 'react-native';
 import {hitSlop} from '../../utils/constant';
 
 interface Props {
   onPress?: any;
-  screenText: string;
+  source?: any;
   backgroundColor?: string;
+  IconStyle?: StyleProp<ImageStyle>;
 }
-const HeaderNavigation = (props: Props) => {
+const BackButton = (props: Props) => {
   return (
-    <View style={styles.mainViewStyle}>
-      <SafeAreaView />
-      <TouchableOpacity
-        hitSlop={hitSlop}
-        activeOpacity={0.7}
-        style={styles.touchStyle}>
-        <Image source={localeImage.back} style={styles.imageStyle} />
-      </TouchableOpacity>
-      <Text style={styles.screenTextStyle}>
-        {props?.screenText || 'screenName'}
-      </Text>
-    </View>
+    <TouchableOpacity
+      onPress={props?.onPress}
+      hitSlop={hitSlop}
+      activeOpacity={0.7}
+      style={styles.touchStyle}>
+      <Image
+        source={props?.source || localeImage.back}
+        style={props?.IconStyle || styles.imageStyle}
+      />
+    </TouchableOpacity>
   );
 };
 
-export default HeaderNavigation;
+export default BackButton;
 
 const styles = StyleSheet.create({
   mainViewStyle: {
