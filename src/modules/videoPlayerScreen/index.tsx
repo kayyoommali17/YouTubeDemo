@@ -29,7 +29,10 @@ const VideoPlayer = () => {
     (item: any) => item?.sources !== details?.sources,
   );
 
+  console.log('rerender at player');
+
   /**
+   *
    *
    */
   React.useEffect(() => {

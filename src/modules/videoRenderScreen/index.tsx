@@ -19,6 +19,7 @@ const VideoRenderScreen = () => {
   const navigation = useNavigation<any>();
   const [data, setData] = useState<any>([]);
   const [shimmerLoading, setShimmerLoading] = useState(true);
+  console.log('rerender at render screen');
 
   useEffect(() => {
     // Simulate shimmerLoading data

@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react';
-import Video from 'react-native-video';
+import React, {useCallback, useRef, useState} from 'react';
+import Video, {OnBufferData, OnProgressData} from 'react-native-video';
 import Colors from '../../themes/colors';
 import TouchableImage from '../TouchImage';
 import {vh, vw} from '../../utils/dimensions';
@@ -18,6 +18,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {hitSlop} from '../../utils/constant';
+import {formatTime, navigationRef, videoRef} from '../../utils/common';
+import LoadingIndicator from '../ActivityIndicator';
 
 interface Props {
   source: any;
@@ -43,7 +45,7 @@ const VideoPlayerComponent = (props: Props) => {
   const [paused, setPaused] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setcurrentTime] = useState(0);
-  const [videoRef, setVideoRef] = useState<any>(null);
+  // const [videoRef, setVideoRef] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showIcon, setShowIcon] = useState<boolean>(false);
   const [currOrientation, setOrientation] = useState('PORTRAIT');
@@ -51,6 +53,8 @@ const VideoPlayerComponent = (props: Props) => {
     height: vh(200),
     width: '100%',
   });
+
+  console.log('rerender');
 
   /**
    *
@@ -69,6 +73,9 @@ const VideoPlayerComponent = (props: Props) => {
     return `${hours}${minutes}${secnds}`;
   };
 
+  React.useEffect(() => {
+    setPaused(false);
+  }, []);
   // React.useEffect(() => {
   //   Orientation.lockToPortrait(); // Set the initial orientation to portrait
   //   Orientation.addOrientationListener(handleOrientationChange);
@@ -87,9 +94,8 @@ const VideoPlayerComponent = (props: Props) => {
     };
   }, []);
 
-  React.useEffect(() => {
-    setPaused(false);
-  }, []);
+  const isOreintation = currOrientation.includes('LANDSCAPE');
+  const dynamicHieghtWidth = isOreintation ? vh(40) : vh(30);
 
   /**
    * @description as screen render setting oreintation
@@ -112,7 +118,7 @@ const VideoPlayerComponent = (props: Props) => {
    * @description handle fullscreen mode
    */
   const handleOreinTation = () => {
-    if (currOrientation.includes('LANDSCAPE')) {
+    if (isOreintation) {
       Orientation.lockToPortrait();
       setVideoStyle({
         width: '100%',
@@ -126,9 +132,6 @@ const VideoPlayerComponent = (props: Props) => {
       });
     }
   };
-
-  const isOreintation = currOrientation.includes('LANDSCAPE');
-  const dynamicHieghtWidth = isOreintation ? vh(40) : vh(30);
 
   /**
    * @clearTimeOut function
@@ -145,7 +148,7 @@ const VideoPlayerComponent = (props: Props) => {
    * @description skip forward 10 sec
    */
   const _skipForward = () => {
-    videoRef.seek(currentTime + 10);
+    videoRef?.current?.seek(currentTime + 10);
     setShowIcon(true);
     clearTimeOut();
     const secondTime = setTimeout(() => {
@@ -160,7 +163,7 @@ const VideoPlayerComponent = (props: Props) => {
    * @description skip backward 10 sec
    */
   const _skipBackward = () => {
-    videoRef.seek(currentTime - 10);
+    videoRef?.current?.seek(currentTime - 10);
     setShowIcon(true);
     clearTimeOut();
     const thirdTime = setTimeout(() => {
@@ -180,29 +183,36 @@ const VideoPlayerComponent = (props: Props) => {
    * @_onSlidingComplete function
    * @description setting current time onsliding sekkbar
    */
-  const _onSlidingComplete = (value: any) => {
-    value = Array.isArray(value) ? value[0] : value;
-    setcurrentTime(value);
-    videoRef.seek(value);
-    const sixthTimer = setTimeout(() => {
-      setShowIcon(false);
-    }, 3000);
-    clearTime?.current?.push(sixthTimer);
-  };
+  const _onSlidingComplete = useCallback(
+    (value: any) => {
+      value = Array.isArray(value) ? value[0] : value;
+      setcurrentTime(value);
+      videoRef?.current?.seek(value);
+      const sixthTimer = setTimeout(() => {
+        setShowIcon(false);
+      }, 3000);
+      clearTime?.current?.push(sixthTimer);
+    },
+    [currentTime],
+  );
 
   /**
    * @_onLoad function
    * @description seting duration
    */
-  const _onLoad = (obj: any) => {
-    setDuration(obj.duration);
-  };
+  const _onLoad = useCallback(
+    (obj: any) => {
+      setIsLoading(false);
+      setDuration(obj.duration);
+    },
+    [duration, isLoading],
+  );
 
   /**
    * @_togglePlayPaused function
    * @description seting toggle
    */
-  const _togglePlayPaused = () => {
+  const _togglePlayPaused = useCallback(() => {
     clearTimeOut();
     setPaused(prev => {
       if (prev === false) {
@@ -215,36 +225,45 @@ const VideoPlayerComponent = (props: Props) => {
       }
       return !prev;
     });
-  };
+  }, [paused]);
 
   /**
    * @_onBuffer function
    * @description checking if buffering or not then setting loading activityindicator
    */
-  const _onBuffer = ({isBuffering}: {isBuffering: boolean}) => {
-    setIsLoading(isBuffering);
-  };
+  // const _onBuffer = ({isBuffering}: {isBuffering: boolean}) => {
+  //   setIsLoading(isBuffering);
+  // };
+
+  const _onBuffer = useCallback(
+    (data: OnBufferData) => {
+      if (isLoading !== data.isBuffering) {
+        setIsLoading(data.isBuffering);
+      }
+    },
+    [isLoading],
+  );
 
   /**
    * @_onLoadStart function
    * @description seting loading true if loading start
    */
-  const _onLoadStart = () => {
+  const _onLoadStart = useCallback(() => {
     setIsLoading(true);
-  };
+  }, [isLoading]);
 
   /**
-   * @_renderActivityIndicator function
-   * @description return activity indicator
+   * @onPressBack Function
+   *
    */
-  const _renderActivityIndicator = () => {
-    return (
-      <View style={[styles.activityIndicator, {}]}>
-        <ActivityIndicator size="large" color="#fff" />
-      </View>
-    );
+  const onPressBack = () => {
+    setPaused(true);
+    props.onPressBackButton();
   };
 
+  const _onProgress = useCallback((value: OnProgressData) => {
+    setcurrentTime(value.currentTime);
+  }, []);
   const onPressIconContainer = () => {
     setShowIcon(true);
     const timeout2 = setTimeout(() => {
@@ -253,10 +272,15 @@ const VideoPlayerComponent = (props: Props) => {
     clearTime.current.push(timeout2);
   };
 
+  const getTime = useCallback(() => {
+    return `${formatTime(currentTime)}/${formatTime(duration)}`;
+  }, [currentTime]);
+
   return (
     <View>
       <Video
         repeat={true}
+        ref={videoRef}
         paused={paused}
         onLoad={_onLoad}
         resizeMode="cover"
@@ -264,14 +288,13 @@ const VideoPlayerComponent = (props: Props) => {
         source={props.source}
         playInBackground={false}
         playWhenInactive={false}
+        onProgress={_onProgress}
         onLoadStart={_onLoadStart}
         fullscreenAutorotate={true}
         fullscreenOrientation={'all'}
         bufferConfig={BUFFER_CONFIG}
-        ref={(ref: any) => setVideoRef(ref)}
         style={[videoStyle, props.videoStyles]}
         fullscreen={isOreintation ? true : false}
-        onProgress={value => setcurrentTime(value.currentTime)}
       />
 
       <TouchableOpacity
@@ -284,12 +307,9 @@ const VideoPlayerComponent = (props: Props) => {
         ]}>
         {showIcon && (
           <>
-            {!currOrientation.includes('LANDSCAPE') ? (
+            {!isOreintation ? (
               <TouchableImage
-                onPress={() => {
-                  props.onPressBackButton();
-                  setPaused(true);
-                }}
+                onPress={onPressBack}
                 source={localeImage.back}
                 imageStyle={[
                   styles.backImageStyle,
@@ -350,7 +370,6 @@ const VideoPlayerComponent = (props: Props) => {
               value={currentTime}
               maximumValue={duration}
               thumbTintColor={Colors.white}
-              // thumbImage=
               onSlidingStart={onSlidindStart}
               maximumTrackTintColor={Colors.white}
               minimumTrackTintColor={Colors.tabColor}
@@ -374,9 +393,7 @@ const VideoPlayerComponent = (props: Props) => {
                     : vh(15),
                 },
               ]}>
-              {secondToHoursMinutesSeconds(currentTime)}
-              {'/'}
-              {secondToHoursMinutesSeconds(duration)}
+              {getTime()}
             </Text>
             <TouchableOpacity
               hitSlop={hitSlop}
@@ -400,7 +417,7 @@ const VideoPlayerComponent = (props: Props) => {
           </>
         )}
       </TouchableOpacity>
-      {isLoading && _renderActivityIndicator()}
+      {isLoading && <LoadingIndicator />}
     </View>
   );
 };

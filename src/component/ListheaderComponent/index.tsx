@@ -15,6 +15,8 @@ const ListHeaderComponent = ({details}: any) => {
     vlaue: localeString.subs,
   });
 
+  console.log('url', details.sources);
+
   /**
    * @CustomShare Function
    * @description returns react native share
@@ -22,6 +24,7 @@ const ListHeaderComponent = ({details}: any) => {
   const CustomShare = async () => {
     const myCustomShare = {
       message: 'This is test message',
+      url: details.sources,
     };
     try {
       const ShareResponse = await Share.open(myCustomShare)
@@ -84,7 +87,7 @@ const ListHeaderComponent = ({details}: any) => {
       </Text>
       {details?.description.length > 100 && (
         <Text
-          style={{color: Colors.grey}}
+          style={{color: Colors.grey, width: 70}}
           onPress={() => setShowMore(!showMore)}>
           {showMore ? 'see more' : 'see less'}
         </Text>
