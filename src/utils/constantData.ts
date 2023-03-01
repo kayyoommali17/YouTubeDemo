@@ -1,4 +1,6 @@
-const renderData = [
+import localeImage from './localeInImage';
+
+export const renderData = [
   {
     id: 123,
     description:
@@ -170,4 +172,34 @@ const renderData = [
   },
 ];
 
-export default renderData;
+/**
+ * @metaData data
+ * @description render button of like,dislike and etc.
+ */
+export const metaData = [
+  {
+    id: 1,
+    title: '50',
+    image: localeImage.like,
+  },
+  {
+    id: 2,
+    title: '50',
+    image: localeImage.dislike,
+  },
+  {
+    id: 3,
+    title: 'Share',
+    image: localeImage.share,
+  },
+  {
+    id: 4,
+    title: 'Favorite',
+    image: localeImage.favorite,
+  },
+  {
+    id: 5,
+    title: 'Donate',
+    image: localeImage.donate,
+  },
+];

@@ -6,38 +6,8 @@ import {vh, vw} from '../../utils/dimensions';
 import localeImage from '../../utils/localeInImage';
 import {localeString} from '../../utils/localString';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {metaData} from '../../utils/constantData';
 
-/**
- * @metaData data
- * @description render button of like,dislike and etc.
- */
-const metaData = [
-  {
-    id: 1,
-    title: '50',
-    image: localeImage.like,
-  },
-  {
-    id: 2,
-    title: '50',
-    image: localeImage.dislike,
-  },
-  {
-    id: 3,
-    title: 'Share',
-    image: localeImage.share,
-  },
-  {
-    id: 4,
-    title: 'Favorite',
-    image: localeImage.favorite,
-  },
-  {
-    id: 5,
-    title: 'Donate',
-    image: localeImage.donate,
-  },
-];
 const ListHeaderComponent = ({details}: any) => {
   const [showMore, setShowMore] = useState(true);
   const [subsCribition, setsubsCribition] = useState({

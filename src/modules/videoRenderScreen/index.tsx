@@ -1,9 +1,3 @@
-import {vh} from '../../utils/dimensions';
-import React, {useEffect, useState} from 'react';
-import routesNames from '../../utils/routesNames';
-import renderData from '../../utils/constantData';
-import CustomCard from '../../component/CustomCard';
-import {useNavigation} from '@react-navigation/native';
 import {
   Text,
   View,
@@ -11,6 +5,12 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
+import {vh} from '../../utils/dimensions';
+import React, {useEffect, useState} from 'react';
+import routesNames from '../../utils/routesNames';
+import CustomCard from '../../component/CustomCard';
+import {renderData} from '../../utils/constantData';
+import {useNavigation} from '@react-navigation/native';
 import SkelTon from '../../component/CustomShimmer/ShimmerSkelton';
 
 const PAGE_SIZE = 3;
