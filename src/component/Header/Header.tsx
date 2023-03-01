@@ -3,14 +3,11 @@ import Colors from '../../themes/colors';
 import localeImage from '../../utils/localeInImage';
 import {normalize, vh, vw} from '../../utils/dimensions';
 import {
-  Text,
-  View,
   Image,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
   StyleProp,
+  StyleSheet,
   ImageStyle,
+  TouchableOpacity,
 } from 'react-native';
 import {hitSlop} from '../../utils/constant';
 
@@ -35,7 +32,7 @@ const BackButton = (props: Props) => {
   );
 };
 
-export default BackButton;
+export default React.memo(BackButton);
 
 const styles = StyleSheet.create({
   mainViewStyle: {
@@ -48,7 +45,6 @@ const styles = StyleSheet.create({
   screenTextStyle: {
     fontWeight: 'bold',
     marginLeft: vw(100),
-    // textAlign: 'center',
     color: Colors.black,
     fontSize: normalize(18),
   },

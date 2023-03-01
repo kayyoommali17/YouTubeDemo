@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {Modal, Text, TouchableOpacity, View} from 'react-native';
 
 function SubscribeButton(props: any) {
-  const [showModal, setShowModal] = useState(false);
   const {onOptionSelect} = props;
 
   const handleOptionSelect = (option: any) => {

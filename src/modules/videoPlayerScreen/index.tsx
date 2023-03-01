@@ -1,6 +1,6 @@
-import React, {useRef, useState} from 'react';
 import Colors from '../../themes/colors';
 import {vh, vw} from '../../utils/dimensions';
+import React, {useRef, useState} from 'react';
 import renderData from '../../utils/constantData';
 import CustomCard from '../../component/CustomCard';
 import {FlatList, StyleSheet, View} from 'react-native';
@@ -71,6 +71,10 @@ const VideoPlayer = () => {
     );
   };
 
+  const onPressBack = () => {
+    navigation.goBack();
+  };
+
   /**
    *
    * @_listHeaderComponent componnet
@@ -93,9 +97,7 @@ const VideoPlayer = () => {
         },
       ]}>
       <VideoPlayerComponent
-        onPressBackButton={() => {
-          navigation.goBack();
-        }}
+        onPressBackButton={onPressBack}
         source={{uri: details?.sources}}
       />
       <FlatList

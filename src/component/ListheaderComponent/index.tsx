@@ -1,18 +1,11 @@
 import React, {useState} from 'react';
+import Share from 'react-native-share';
 import Colors from '../../themes/colors';
 import {hitSlop} from '../../utils/constant';
 import {vh, vw} from '../../utils/dimensions';
 import localeImage from '../../utils/localeInImage';
 import {localeString} from '../../utils/localString';
-import {
-  Image,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Share from 'react-native-share';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 /**
  * @metaData data
@@ -120,7 +113,9 @@ const ListHeaderComponent = ({details}: any) => {
         {details?.description}
       </Text>
       {details?.description.length > 100 && (
-        <Text onPress={() => setShowMore(!showMore)}>
+        <Text
+          style={{color: Colors.grey}}
+          onPress={() => setShowMore(!showMore)}>
           {showMore ? 'see more' : 'see less'}
         </Text>
       )}
@@ -213,10 +208,12 @@ const styles = StyleSheet.create({
   listContainer: {
     marginTop: vh(20),
     flexDirection: 'row',
+    flex: 1,
   },
   itemContainer: {
     alignItems: 'center',
-    paddingHorizontal: vw(20),
+    paddingHorizontal: vw(10),
+    flex: 1,
   },
   itemText: {
     fontSize: vh(12),
@@ -260,6 +257,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: vw(30),
     paddingVertical: vh(8),
     borderRadius: vw(20),
+    maxWidth: vw(150),
+    alignItems: 'center',
   },
   renderButtonImageStyle: {
     height: vw(20),

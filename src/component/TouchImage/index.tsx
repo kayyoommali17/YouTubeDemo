@@ -33,7 +33,7 @@ const TouchableImage = (props: ImageProps) => {
   );
 };
 
-export default TouchableImage;
+export default React.memo(TouchableImage);
 
 const styles = StyleSheet.create({
   imagestyle: {

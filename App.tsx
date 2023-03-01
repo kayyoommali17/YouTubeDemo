@@ -1,9 +1,12 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import AppNavigator from './src/routes/AppNavigator';
-import TestX from './src/Test/test';
+import ScrollOnClick from './src/Test/ScroolOnClick';
 const App = () => {
-  return <AppNavigator />;
+  return (
+    <AppNavigator />
+    // <ScrollOnClick />
+  );
 };
 
 export default App;

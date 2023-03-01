@@ -45,49 +45,7 @@ const SkelTon = () => {
   );
 };
 
-export default SkelTon;
-
-// <SkeletonPlaceholder borderRadius={4}>
-//   <View style={{flexDirection: 'row', alignItems: 'center'}}>
-//     <View style={{width: 60, height: 60, borderRadius: 50}} />
-//     <View style={{marginLeft: 20}}>
-//       {/* <Image style={{width: 120, height: 20}} src={requre('./src/assets/image.png')} /> */}
-//       <Text style={{marginTop: 6, fontSize: 14, lineHeight: 18}}>
-//         Hello world
-//       </Text>
-//     </View>
-//   </View>
-// </SkeletonPlaceholder>;
-
-// const ShimmerApp = () => {
-//   /**
-//    *
-//    * @renderItem function that returns a component
-//    * @returns uniqueness  component
-//    */
-//   const renderItem = ({item, index}: any) => {
-//     return (
-//       <View style={styles.profileWrapper}>
-//         <Shimmering wrapperStyle={styles.mainShimmerContainerStyle} />
-//         <Shimmering wrapperStyle={styles.innerContainerShimmerStyle} />
-//         <View style={styles.innerContainerStyle}>
-//           <Shimmering wrapperStyle={styles.profileShimmerStyle} />
-//           <Shimmering wrapperStyle={styles.channelShimmerStyle} />
-//         </View>
-//       </View>
-//     );
-//   };
-
-//   return (
-//     <FlatList
-//       data={list}
-//       renderItem={renderItem}
-//       style={styles.container}
-//       keyExtractor={keyExtractor}
-//     />
-//   );
-// };
-
+export default React.memo(SkelTon);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -133,5 +91,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
-// export default React.memo(ShimmerApp);

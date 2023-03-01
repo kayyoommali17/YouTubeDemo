@@ -18,7 +18,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {hitSlop} from '../../utils/constant';
-import {useIsFocused} from '@react-navigation/native';
 
 interface Props {
   source: any;
@@ -47,7 +46,6 @@ const VideoPlayerComponent = (props: Props) => {
   const [videoRef, setVideoRef] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showIcon, setShowIcon] = useState<boolean>(false);
-  const isFocused = useIsFocused();
   const [currOrientation, setOrientation] = useState('PORTRAIT');
   const [videoStyle, setVideoStyle] = useState<any>({
     height: vh(200),
@@ -71,6 +69,14 @@ const VideoPlayerComponent = (props: Props) => {
     return `${hours}${minutes}${secnds}`;
   };
 
+  // React.useEffect(() => {
+  //   Orientation.lockToPortrait(); // Set the initial orientation to portrait
+  //   Orientation.addOrientationListener(handleOrientationChange);
+  //   return () => {
+  //     Orientation.removeOrientationListener(handleOrientationChange);
+  //   };
+  // }, []);
+
   React.useEffect(() => {
     const firstTime = setTimeout(() => {
       setShowIcon(false);
@@ -79,6 +85,10 @@ const VideoPlayerComponent = (props: Props) => {
     return () => {
       setPaused(true);
     };
+  }, []);
+
+  React.useEffect(() => {
+    setPaused(false);
   }, []);
 
   /**
@@ -105,8 +115,8 @@ const VideoPlayerComponent = (props: Props) => {
     if (currOrientation.includes('LANDSCAPE')) {
       Orientation.lockToPortrait();
       setVideoStyle({
-        height: 200,
         width: '100%',
+        height: vh(200),
       });
     } else {
       Orientation.lockToLandscape();
@@ -115,10 +125,6 @@ const VideoPlayerComponent = (props: Props) => {
         width: '100%',
       });
     }
-  };
-
-  const playStateWhenFocused = () => {
-    return paused;
   };
 
   const isOreintation = currOrientation.includes('LANDSCAPE');
@@ -217,11 +223,6 @@ const VideoPlayerComponent = (props: Props) => {
    */
   const _onBuffer = ({isBuffering}: {isBuffering: boolean}) => {
     setIsLoading(isBuffering);
-    // if (isBuffering) {
-    //   setIsLoading(true);
-    // } else {
-    //   setIsLoading(false);
-    // }
   };
 
   /**
@@ -255,6 +256,8 @@ const VideoPlayerComponent = (props: Props) => {
   return (
     <View>
       <Video
+        repeat={true}
+        paused={paused}
         onLoad={_onLoad}
         resizeMode="cover"
         onBuffer={_onBuffer}
@@ -269,7 +272,6 @@ const VideoPlayerComponent = (props: Props) => {
         style={[videoStyle, props.videoStyles]}
         fullscreen={isOreintation ? true : false}
         onProgress={value => setcurrentTime(value.currentTime)}
-        paused={isFocused === false ? true : playStateWhenFocused()}
       />
 
       <TouchableOpacity
@@ -347,8 +349,9 @@ const VideoPlayerComponent = (props: Props) => {
               minimumValue={0}
               value={currentTime}
               maximumValue={duration}
-              onSlidingStart={onSlidindStart}
               thumbTintColor={Colors.white}
+              // thumbImage=
+              onSlidingStart={onSlidindStart}
               maximumTrackTintColor={Colors.white}
               minimumTrackTintColor={Colors.tabColor}
               style={[
@@ -402,7 +405,7 @@ const VideoPlayerComponent = (props: Props) => {
   );
 };
 
-export default VideoPlayerComponent;
+export default React.memo(VideoPlayerComponent);
 
 const styles = StyleSheet.create({
   videoStyle: {
