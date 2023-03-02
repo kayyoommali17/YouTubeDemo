@@ -15,11 +15,14 @@ import React from 'react';
 import Colors from '../../themes/colors';
 import {hitSlop} from '../../utils/constant';
 import localeImage from '../../utils/localeInImage';
-import {DESIGN_WIDTH, vh, vw} from '../../utils/dimensions';
+import {DESIGN_WIDTH, normalize, vh, vw} from '../../utils/dimensions';
 interface Props {
   thumb?: any;
-  channelName?: string;
+  duration?: string;
+  totalViews?: string;
   videoTitle?: string;
+  channelName?: string;
+  uplodedTime?: string;
   source: ImageSourcePropType;
   titleStyle?: StyleProp<TextStyle>;
   cardViewStyle?: StyleProp<ViewStyle>;
@@ -38,13 +41,13 @@ const CustomCard = (props: Props) => {
         source={props?.source || localeImage.happyWomen}
       />
       <Image style={styles.PalyIconStyle} source={localeImage.play} />
-      <Text style={styles.durationTextStyle}>{'5:50'}</Text>
+      <Text style={styles.durationTextStyle}>{props.duration || '5:50'}</Text>
       <Text style={[styles.videoTitleStyle, props?.titleStyle]}>
         {props?.videoTitle || 'How to make yourself happy?'}
       </Text>
       <Text style={styles.metaInfoStyle}>
-        {'94k views'}
-        {'. 3 days ago'}
+        {props.totalViews || '94k views'}
+        {props.uplodedTime || ' . 3 days ago'}
       </Text>
       <View style={styles.channelInfoViewStyle}>
         <Image
@@ -117,11 +120,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Medium',
   },
   durationTextStyle: {
+    padding: 4,
+    opacity: 0.5,
     right: vw(10),
     bottom: vh(120),
-    fontWeight: 'bold',
+    fontSize: vh(12),
     position: 'absolute',
     color: Colors.white,
+    backgroundColor: Colors.black,
   },
   PalyIconStyle: {
     height: vw(30),

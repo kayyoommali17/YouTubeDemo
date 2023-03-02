@@ -1,18 +1,6 @@
 import React from 'react';
-import {
-  View,
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  Dimensions,
-} from 'react-native';
-import Colors from '../../themes/colors';
-import {
-  normalize,
-  SCREEN_HEIGHT,
-  SCREEN_WIDTH,
-  vh,
-} from '../../utils/dimensions';
+import {vh} from '../../utils/dimensions';
+import {View, ActivityIndicator, StyleSheet, Dimensions} from 'react-native';
 const {width, height} = Dimensions.get('screen');
 const LoadingIndicator = ({size, color}: any) => {
   // const isOreintation = currOrientation.includes('LANDSCAPE');
@@ -45,11 +33,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   activityIndicatorr: {
-    position: 'absolute',
-    bottom: vh(18),
     top: 0,
     left: 0,
     right: 0,
+    position: 'absolute',
+    bottom: width > height ? vh(50) : vh(18),
   },
 });
 

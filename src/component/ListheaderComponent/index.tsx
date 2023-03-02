@@ -8,14 +8,18 @@ import {localeString} from '../../utils/localString';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {metaData} from '../../utils/constantData';
 
-const ListHeaderComponent = ({details}: any) => {
+interface Props {
+  details?: any;
+  totalViews?: string;
+}
+const ListHeaderComponent = (props: Props) => {
   const [showMore, setShowMore] = useState(true);
   const [subsCribition, setsubsCribition] = useState({
     isTrue: true,
     vlaue: localeString.subs,
   });
 
-  console.log('url', details.sources);
+  console.log('url', props.details.sources);
 
   /**
    * @CustomShare Function
@@ -24,7 +28,7 @@ const ListHeaderComponent = ({details}: any) => {
   const CustomShare = async () => {
     const myCustomShare = {
       message: 'This is test message',
-      url: details.sources,
+      url: props.details.sources,
     };
     try {
       const ShareResponse = await Share.open(myCustomShare)
@@ -80,12 +84,14 @@ const ListHeaderComponent = ({details}: any) => {
   };
   return (
     <View style={styles.mainContainerStyleX}>
-      {<Text style={styles.videoTitleStyle}>{details?.subtitle}</Text>}
-      <Text style={styles.metaInfoStyle}>{localeString.views}</Text>
-      <Text numberOfLines={showMore ? 2 : undefined} style={styles.description}>
-        {details?.description}
+      <Text style={styles.videoTitleStyle}>{props?.details?.subtitle}</Text>
+      <Text style={styles.metaInfoStyle}>
+        {props.totalViews || localeString.views}
       </Text>
-      {details?.description.length > 100 && (
+      <Text numberOfLines={showMore ? 2 : undefined} style={styles.description}>
+        {props?.details?.description}
+      </Text>
+      {props?.details?.description.length > 100 && (
         <Text
           style={{color: Colors.grey, width: 70}}
           onPress={() => setShowMore(!showMore)}>
@@ -101,11 +107,11 @@ const ListHeaderComponent = ({details}: any) => {
           <Image
             resizeMode="cover"
             style={styles.channelImageSTyle}
-            source={{uri: details?.thumb}}
+            source={{uri: props?.details?.thumb}}
           />
           <View style={styles.textViewStyle}>
             <Text style={styles.channelNameStyle}>
-              {details?.title.slice(0, 15) + '..'}
+              {props?.details?.title.slice(0, 15) + '..'}
             </Text>
             <Text style={styles.subsTextStyle}>{localeString.totalSubs}</Text>
           </View>
@@ -224,6 +230,7 @@ const styles = StyleSheet.create({
   subsTextStyle: {
     marginTop: vh(5),
     fontSize: vh(14),
+    opacity: 0.7,
   },
   subsButtonStyle: {
     backgroundColor: Colors.tabColor,
@@ -281,7 +288,6 @@ const styles = StyleSheet.create({
     fontSize: vh(12),
   },
   smillarVideoTextStyle: {
-    marginLeft: vw(20),
     marginTop: vh(15),
     fontWeight: 'bold',
   },

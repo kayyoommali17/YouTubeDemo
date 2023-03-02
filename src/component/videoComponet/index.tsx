@@ -1,11 +1,3 @@
-import React, {useCallback, useRef, useState} from 'react';
-import Video, {OnBufferData, OnProgressData} from 'react-native-video';
-import Colors from '../../themes/colors';
-import TouchableImage from '../TouchImage';
-import {vh, vw} from '../../utils/dimensions';
-import localeImage from '../../utils/localeInImage';
-import Slider from '@react-native-community/slider';
-import Orientation from 'react-native-orientation-locker';
 import {
   View,
   Image,
@@ -15,11 +7,18 @@ import {
   ViewStyle,
   StyleSheet,
   TouchableOpacity,
-  ActivityIndicator,
 } from 'react-native';
+import Colors from '../../themes/colors';
+import TouchableImage from '../TouchImage';
 import {hitSlop} from '../../utils/constant';
-import {formatTime, navigationRef, videoRef} from '../../utils/common';
+import {vh, vw} from '../../utils/dimensions';
+import Slider from '@react-native-community/slider';
+import localeImage from '../../utils/localeInImage';
 import LoadingIndicator from '../ActivityIndicator';
+import {formatTime, videoRef} from '../../utils/common';
+import Orientation from 'react-native-orientation-locker';
+import React, {useCallback, useRef, useState} from 'react';
+import Video, {OnBufferData, OnProgressData} from 'react-native-video';
 
 interface Props {
   source: any;
@@ -45,7 +44,6 @@ const VideoPlayerComponent = (props: Props) => {
   const [paused, setPaused] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setcurrentTime] = useState(0);
-  // const [videoRef, setVideoRef] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showIcon, setShowIcon] = useState<boolean>(false);
   const [currOrientation, setOrientation] = useState('PORTRAIT');
@@ -56,33 +54,10 @@ const VideoPlayerComponent = (props: Props) => {
 
   console.log('rerender');
 
-  /**
-   *
-   * @secondToHoursMinutesSeconds Function
-   * @description convert second to format of HH:MM:SS
-   */
-  const secondToHoursMinutesSeconds = (seconds: number | string) => {
-    seconds = Number(seconds);
-    const hour = Math.floor(seconds / 3600);
-    const minute = Math.floor((seconds % 3600) / 60);
-    const second = Math.floor((seconds % 3600) % 60);
-    const hours = hour > 0 ? (hour < 10 ? `0${hour}:` : `${hour}:`) : '';
-    const minutes =
-      minute > 0 ? (minute < 10 ? `0${minute}:` : `${minute}:`) : '00:';
-    const secnds = second > 0 ? (second < 10 ? `0${second}` : second) : '00';
-    return `${hours}${minutes}${secnds}`;
-  };
-
   React.useEffect(() => {
     setPaused(false);
-  }, []);
-  // React.useEffect(() => {
-  //   Orientation.lockToPortrait(); // Set the initial orientation to portrait
-  //   Orientation.addOrientationListener(handleOrientationChange);
-  //   return () => {
-  //     Orientation.removeOrientationListener(handleOrientationChange);
-  //   };
-  // }, []);
+    setcurrentTime(0);
+  }, [props.source]);
 
   React.useEffect(() => {
     const firstTime = setTimeout(() => {
@@ -110,6 +85,42 @@ const VideoPlayerComponent = (props: Props) => {
     return () => {
       Orientation.unlockAllOrientations();
       Orientation.removeLockListener(handleOreinTation);
+    };
+  }, []);
+
+  /**
+   * @description as screen render setting oreintation
+   */
+  React.useEffect(() => {
+    Orientation.addDeviceOrientationListener(orientation => {
+      if (orientation.includes('PORTRAIT')) {
+        setVideoStyle({
+          width: '100%',
+          height: vh(200),
+        });
+      } else {
+        setVideoStyle({
+          height: '100%',
+          width: '100%',
+        });
+      }
+    });
+    Orientation.unlockAllOrientations();
+    return () => {
+      Orientation.lockToPortrait();
+      Orientation.removeDeviceOrientationListener(orientation => {
+        if (orientation === 'PORTRAIT') {
+          setVideoStyle({
+            width: '100%',
+            height: vh(200),
+          });
+        } else {
+          setVideoStyle({
+            width: '100%',
+            height: '100%',
+          });
+        }
+      });
     };
   }, []);
 
@@ -157,7 +168,6 @@ const VideoPlayerComponent = (props: Props) => {
     clearTime.current.push(secondTime);
   };
 
-  // };
   /**
    * @_skipBackward function
    * @description skip backward 10 sec
@@ -173,9 +183,6 @@ const VideoPlayerComponent = (props: Props) => {
   };
 
   const onSlidindStart = () => {
-    // while (clearTime.current.length) {
-    //   clearTimeout(timeout?.current?.pop());
-    // }
     clearTimeOut();
   };
 
@@ -231,10 +238,6 @@ const VideoPlayerComponent = (props: Props) => {
    * @_onBuffer function
    * @description checking if buffering or not then setting loading activityindicator
    */
-  // const _onBuffer = ({isBuffering}: {isBuffering: boolean}) => {
-  //   setIsLoading(isBuffering);
-  // };
-
   const _onBuffer = useCallback(
     (data: OnBufferData) => {
       if (isLoading !== data.isBuffering) {
@@ -261,9 +264,18 @@ const VideoPlayerComponent = (props: Props) => {
     props.onPressBackButton();
   };
 
+  /**
+   * @_onProgress Function
+   * @description setting current time
+   */
   const _onProgress = useCallback((value: OnProgressData) => {
     setcurrentTime(value.currentTime);
   }, []);
+
+  /**
+   * @onPressIconContainer Function
+   * @description use for showing icon
+   */
   const onPressIconContainer = () => {
     setShowIcon(true);
     const timeout2 = setTimeout(() => {
@@ -272,6 +284,10 @@ const VideoPlayerComponent = (props: Props) => {
     clearTime.current.push(timeout2);
   };
 
+  /**
+   * @getTime function
+   * @description format time
+   */
   const getTime = useCallback(() => {
     return `${formatTime(currentTime)}/${formatTime(duration)}`;
   }, [currentTime]);
@@ -303,7 +319,7 @@ const VideoPlayerComponent = (props: Props) => {
         onPress={onPressIconContainer}
         style={[
           styles.videoControlStyle,
-          {height: isOreintation ? '100%' : vh(200)},
+          {height: isOreintation ? '100%' : '100%'},
         ]}>
         {showIcon && (
           <>
@@ -365,8 +381,8 @@ const VideoPlayerComponent = (props: Props) => {
               />
             </View>
             <Slider
-              tapToSeek
               minimumValue={0}
+              tapToSeek={true}
               value={currentTime}
               maximumValue={duration}
               thumbTintColor={Colors.white}
@@ -430,10 +446,10 @@ const styles = StyleSheet.create({
     height: vh(200),
   },
   videoControlStyle: {
-    width: '100%',
-    position: 'absolute',
     zIndex: 1,
-    height: vh(200),
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
   },
   backButtonStyle: {
     alignSelf: 'flex-start',
