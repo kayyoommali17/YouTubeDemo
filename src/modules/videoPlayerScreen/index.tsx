@@ -49,11 +49,6 @@ const VideoPlayer = () => {
    */
 
   const _renderItem = ({item}: any) => {
-    // if (!shimmerLoading) {
-    //   return (
-
-    //   );
-    // }
     const onPress = () => {
       setDetails(item);
       setShimmerLoading(true);
