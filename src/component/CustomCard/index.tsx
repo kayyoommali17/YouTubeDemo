@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ImageSourcePropType,
   GestureResponderEvent,
+  Platform,
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {styles} from './style';
@@ -133,7 +134,7 @@ const CustomCard = (props: Props) => {
             value={currentTime}
             maximumValue={duration}
             style={styles.seekbarStyle}
-            thumbImage={localeImage.dot}
+            thumbImage={Platform.OS == 'ios' ? localeImage.dot : null}
             onValueChange={_onValueChange}
             thumbTintColor={Colors.darkRed}
             maximumTrackTintColor={Colors.grey}

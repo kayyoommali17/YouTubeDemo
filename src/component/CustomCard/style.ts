@@ -105,8 +105,8 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     position: 'absolute',
     width: '100%',
-    height: vh(10),
-    bottom: vh(-7),
+    height: vh(40),
+    bottom: vh(0),
     zIndex: 99,
   },
 });
