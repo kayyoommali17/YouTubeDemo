@@ -1,16 +1,11 @@
-import {
-  Text,
-  View,
-  FlatList,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
 import {vh} from '../../utils/dimensions';
 import React, {useEffect, useState} from 'react';
 import routesNames from '../../utils/routesNames';
 import CustomCard from '../../component/CustomCard';
 import {renderData} from '../../utils/constantData';
 import {useNavigation} from '@react-navigation/native';
+import {Text, View, FlatList, StyleSheet} from 'react-native';
+import LoadingIndicator from '../../component/ActivityIndicator';
 import SkelTon from '../../component/CustomShimmer/ShimmerSkelton';
 
 const PAGE_SIZE = 3;
@@ -87,7 +82,7 @@ const VideoRenderScreen = () => {
   const renderFooter = () => {
     return (
       <View style={styles.loaderContainer}>
-        <ActivityIndicator animating size="large" />
+        <LoadingIndicator />
       </View>
     );
   };
@@ -123,12 +118,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emptyText: {
-    fontSize: 20,
+    fontSize: vh(20),
     fontWeight: 'bold',
   },
   loaderContainer: {
-    paddingVertical: 20,
-    borderTopWidth: 1,
-    borderColor: '#CED0CE',
+    marginTop: vh(20),
   },
 });

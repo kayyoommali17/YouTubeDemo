@@ -17,6 +17,14 @@ export const styles = StyleSheet.create({
     shadowRadius: 8.3,
     elevation: 13,
   },
+  videoOnHovePlay: {
+    width: '100%',
+    aspectRatio: 1 / 0.563,
+    position: 'absolute',
+    zIndex: 3,
+    elevation: 3,
+    backgroundColor: Colors.black,
+  },
   cardImageStyle: {
     borderTopLeftRadius: vh(10),
     borderTopRightRadius: vh(10),
@@ -61,7 +69,7 @@ export const styles = StyleSheet.create({
     padding: 4,
     opacity: 0.5,
     right: vw(10),
-    bottom: vh(120),
+    bottom: vh(10),
     fontSize: vh(12),
     position: 'absolute',
     color: Colors.white,
@@ -74,5 +82,31 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     resizeMode: 'contain',
     left: DESIGN_WIDTH / 2 - 40,
+  },
+
+  viewHoverPlay: {
+    width: '100%',
+    overflow: 'hidden',
+    borderTopRightRadius: vh(10),
+    borderTopLeftRadius: vh(10),
+  },
+  muteUnmuteTouchStyle: {
+    position: 'absolute',
+    right: vw(10),
+    zIndex: 1,
+    top: vh(10),
+  },
+  muteUnmuteIconStyle: {
+    height: vh(20),
+    width: vh(20),
+    tintColor: Colors.white,
+  },
+  seekbarStyle: {
+    backgroundColor: 'transparent',
+    position: 'absolute',
+    width: '100%',
+    height: vh(10),
+    bottom: vh(-7),
+    zIndex: 99,
   },
 });

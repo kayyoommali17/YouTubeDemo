@@ -26,6 +26,7 @@ const TouchableImage = (props: ImageProps) => {
       onPress={props.onPress}
       style={[props.touchableStyle]}>
       <Image
+        resizeMode="contain"
         style={props.imageStyle || styles.imagestyle}
         source={props.source || localeImage.play}
       />

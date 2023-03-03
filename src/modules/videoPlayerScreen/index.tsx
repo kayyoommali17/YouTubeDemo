@@ -2,13 +2,13 @@ import Colors from '../../themes/colors';
 import {vh, vw} from '../../utils/dimensions';
 import React, {useRef, useState} from 'react';
 import CustomCard from '../../component/CustomCard';
+import {renderData} from '../../utils/constantData';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import VideoPlayerComponent from '../../component/videoComponet';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ListHeaderComponent from '../../component/ListheaderComponent/index';
 import ShimmerForVideoPlayer from '../../component/CustomShimmer/ShimmerForVideoPlayer';
-import {renderData} from '../../utils/constantData';
 /**
  *
  *

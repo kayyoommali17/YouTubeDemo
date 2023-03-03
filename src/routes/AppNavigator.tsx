@@ -3,14 +3,11 @@ import Colors from '../themes/colors';
 import {vw} from '../utils/dimensions';
 import MyTopTabs from './TopTapNavigator';
 import routesNames from '../utils/routesNames';
-import localeImage from '../utils/localeInImage';
-import TouchableImage from '../component/TouchImage';
 import VideoPlayer from '../modules/videoPlayerScreen';
+import HeaderNavigation from '../component/Header/Header';
 import {NavigationContainer} from '@react-navigation/native';
 import {StyleSheet, GestureResponderEvent} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import HeaderNavigation from '../component/Header/Header';
-
 interface Props {
   onPress?: ((event: GestureResponderEvent) => void) | undefined;
 }

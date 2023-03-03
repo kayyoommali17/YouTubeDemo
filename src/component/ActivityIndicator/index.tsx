@@ -1,9 +1,9 @@
 import React from 'react';
 import {vh} from '../../utils/dimensions';
-import {View, ActivityIndicator, StyleSheet, Dimensions} from 'react-native';
+import Colors from '../../themes/colors';
 const {width, height} = Dimensions.get('screen');
+import {View, ActivityIndicator, StyleSheet, Dimensions} from 'react-native';
 const LoadingIndicator = ({size, color}: any) => {
-  // const isOreintation = currOrientation.includes('LANDSCAPE');
   return (
     <View
       style={[
@@ -15,7 +15,7 @@ const LoadingIndicator = ({size, color}: any) => {
       <ActivityIndicator
         style={styles.activityIndicatorr}
         size={size || 'large'}
-        color={color || '#fff'}
+        color={color || Colors.tabColor}
         animating={true}
       />
     </View>
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: Colors.black,
   },
   activityIndicatorr: {
     top: 0,

@@ -1,28 +1,20 @@
-import {
-  View,
-  Image,
-  Text,
-  Platform,
-  StyleProp,
-  ViewStyle,
-  TouchableOpacity,
-} from 'react-native';
-import {styles} from './style';
-import Colors from '../../themes/colors';
-import TouchableImage from '../TouchImage';
-import {hitSlop} from '../../utils/constant';
-import {vh, vw} from '../../utils/dimensions';
-import Slider from '@react-native-community/slider';
+import {styles} from '../videoComponet/style';
 import localeImage from '../../utils/localeInImage';
 import LoadingIndicator from '../ActivityIndicator';
 import {formatTime, videoRef} from '../../utils/common';
+import {useNavigation} from '@react-navigation/native';
 import Orientation from 'react-native-orientation-locker';
-import React, {useCallback, useRef, useState} from 'react';
+import RnVideoControls from '../RnVideoControls/RnVideoControls';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import Video, {OnBufferData, OnProgressData} from 'react-native-video';
+import {View, StyleProp, ViewStyle, TouchableOpacity} from 'react-native';
 interface Props {
+  ref?: any;
   source: any;
   onPressBackButton?: any;
+  muted?: boolean | undefined;
   videoStyles?: StyleProp<ViewStyle>;
+  resizeMode?: 'stretch' | 'cover' | 'contain' | 'none' | undefined;
 }
 
 interface BufferConfig {
@@ -40,23 +32,20 @@ const BUFFER_CONFIG: BufferConfig = {
 };
 const VideoPlayerComponent = (props: Props) => {
   const clearTime = useRef<any>([]);
+  const navigation = useNavigation<any>();
   const [paused, setPaused] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setcurrentTime] = useState(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showIcon, setShowIcon] = useState<boolean>(false);
   const [currOrientation, setOrientation] = useState('PORTRAIT');
-  const [videoStyle, setVideoStyle] = useState<any>({
-    height: vh(200),
-    width: '100%',
-  });
+  const [videoStyle, setVideoStyle] = useState<any>(styles.initialVideoStyle);
 
   console.log('rerender');
 
   React.useEffect(() => {
     setPaused(false);
-    setcurrentTime(0);
-  }, [props.source]);
+  }, [props?.source]);
 
   React.useEffect(() => {
     const firstTime = setTimeout(() => {
@@ -68,8 +57,7 @@ const VideoPlayerComponent = (props: Props) => {
     };
   }, []);
 
-  const isOreintation = currOrientation.includes('LANDSCAPE');
-  const dynamicHieghtWidth = isOreintation ? vh(40) : vh(30);
+  const isOreintation = currOrientation?.includes('LANDSCAPE');
 
   /**
    * @description as screen render setting oreintation
@@ -88,58 +76,16 @@ const VideoPlayerComponent = (props: Props) => {
   }, []);
 
   /**
-   * @description as screen render setting oreintation
-   */
-  React.useEffect(() => {
-    Orientation.addDeviceOrientationListener(orientation => {
-      if (orientation.includes('PORTRAIT')) {
-        setVideoStyle({
-          width: '100%',
-          height: vh(200),
-        });
-      } else {
-        setVideoStyle({
-          height: '100%',
-          width: '100%',
-        });
-      }
-    });
-    Orientation.unlockAllOrientations();
-    return () => {
-      Orientation.lockToPortrait();
-      Orientation.removeDeviceOrientationListener(orientation => {
-        if (orientation === 'PORTRAIT') {
-          setVideoStyle({
-            width: '100%',
-            height: vh(200),
-          });
-        } else {
-          setVideoStyle({
-            width: '100%',
-            height: '100%',
-          });
-        }
-      });
-    };
-  }, []);
-
-  /**
    * @handleOreinTation Function
    * @description handle fullscreen mode
    */
   const handleOreinTation = () => {
     if (isOreintation) {
       Orientation.lockToPortrait();
-      setVideoStyle({
-        width: '100%',
-        height: vh(200),
-      });
+      setVideoStyle(styles.initialVideoStyle);
     } else {
       Orientation.lockToLandscape();
-      setVideoStyle({
-        height: '100%',
-        width: '100%',
-      });
+      setVideoStyle(styles.nextVideoOreintationStyle);
     }
   };
 
@@ -179,10 +125,6 @@ const VideoPlayerComponent = (props: Props) => {
       setShowIcon(false);
     }, 3000);
     clearTime.current.push(thirdTime);
-  };
-
-  const onSlidindStart = () => {
-    clearTimeOut();
   };
 
   /**
@@ -258,9 +200,15 @@ const VideoPlayerComponent = (props: Props) => {
    * @onPressBack Function
    *
    */
-  const onPressBack = () => {
+  const _onPressBack = () => {
     setPaused(true);
-    props.onPressBackButton();
+    // props.onPressBackButton();
+    if (isOreintation) {
+      Orientation.lockToPortrait();
+      setVideoStyle(styles.initialVideoStyle);
+    } else {
+      navigation.goBack();
+    }
   };
 
   /**
@@ -291,145 +239,63 @@ const VideoPlayerComponent = (props: Props) => {
     return `${formatTime(currentTime)}/${formatTime(duration)}`;
   }, [currentTime]);
 
+  /**
+   * @_onValueChange Function
+   * @description to seek video using seekbar
+   */
+  const _onValueChange = (value: number) => {
+    console.log('onvluechange');
+
+    videoRef?.current?.seek(value);
+    setPaused(false);
+  };
+
+  /**
+   * @isFullscreen Function
+   * @description returns boolean
+   */
+  const isFullscreen = useMemo(() => {
+    return Object.keys(videoStyle)?.includes('position');
+  }, [videoStyle]);
   return (
     <View>
       <Video
         repeat={true}
-        ref={videoRef}
         paused={paused}
         onLoad={_onLoad}
-        resizeMode="cover"
+        muted={props.muted}
         onBuffer={_onBuffer}
         source={props.source}
         playInBackground={false}
         playWhenInactive={false}
         onProgress={_onProgress}
         onLoadStart={_onLoadStart}
-        fullscreenAutorotate={true}
-        fullscreenOrientation={'all'}
+        ref={props?.ref || videoRef}
         bufferConfig={BUFFER_CONFIG}
-        style={[videoStyle, props.videoStyles]}
-        fullscreen={isOreintation ? true : false}
+        fullscreenOrientation={'all'}
+        style={[videoStyle, props?.videoStyles]}
+        resizeMode={isOreintation ? 'contain' : 'cover'}
+        // fullscreen={isOreintation ? true : false}
       />
 
       <TouchableOpacity
-        activeOpacity={0.7}
-        hitSlop={hitSlop}
-        onPress={onPressIconContainer}
-        style={[
-          styles.videoControlStyle,
-          {height: isOreintation ? '100%' : '100%'},
-        ]}>
+        style={styles.overlayTouchableStyle}
+        onPress={onPressIconContainer}>
         {showIcon && (
-          <>
-            {!isOreintation ? (
-              <TouchableImage
-                onPress={onPressBack}
-                source={localeImage.back}
-                imageStyle={[
-                  styles.backImageStyle,
-                  {
-                    height: dynamicHieghtWidth,
-                    width: dynamicHieghtWidth,
-                  },
-                ]}
-                touchableStyle={[
-                  styles.backButtonStyle,
-                  {
-                    top: isOreintation ? vh(20) : vh(10),
-                    left: isOreintation ? vh(20) : vh(10),
-                  },
-                ]}
-              />
-            ) : null}
-            <View style={styles.skipAndPausedStyle}>
-              <TouchableImage
-                onPress={_skipBackward}
-                source={localeImage.skipBkrwd}
-                imageStyle={[
-                  styles.backImageStyle,
-                  {
-                    height: dynamicHieghtWidth,
-                    width: dynamicHieghtWidth,
-                  },
-                ]}
-              />
-              {!isLoading && (
-                <TouchableImage
-                  onPress={_togglePlayPaused}
-                  imageStyle={[
-                    styles.backImageStyle,
-                    {
-                      height: dynamicHieghtWidth,
-                      width: dynamicHieghtWidth,
-                    },
-                  ]}
-                  source={paused ? localeImage.play : localeImage.pause}
-                />
-              )}
-              <TouchableImage
-                onPress={_skipForward}
-                source={localeImage.skipFrwd}
-                imageStyle={[
-                  styles.backImageStyle,
-                  {
-                    height: dynamicHieghtWidth,
-                    width: dynamicHieghtWidth,
-                  },
-                ]}
-              />
-            </View>
-            <Slider
-              minimumValue={0}
-              tapToSeek={true}
-              value={currentTime}
-              maximumValue={duration}
-              thumbTintColor={Colors.white}
-              onSlidingStart={onSlidindStart}
-              maximumTrackTintColor={Colors.white}
-              minimumTrackTintColor={Colors.tabColor}
-              style={[
-                styles.sliderStyle,
-                {
-                  bottom: isOreintation ? vh(20) : vh(5),
-                },
-              ]}
-              onSlidingComplete={_onSlidingComplete}
-            />
-            <Text
-              style={[
-                styles.timeStyleText,
-                {
-                  left: isOreintation ? vw(40) : vw(16),
-                  bottom: isOreintation
-                    ? vw(20)
-                    : Platform.OS == 'android'
-                    ? vw(10)
-                    : vh(15),
-                },
-              ]}>
-              {getTime()}
-            </Text>
-            <TouchableOpacity
-              hitSlop={hitSlop}
-              onPress={handleOreinTation}
-              style={[
-                styles.fullNexitIconStyle,
-                {
-                  bottom: isOreintation
-                    ? vh(20)
-                    : Platform.OS == 'android'
-                    ? vh(8)
-                    : vh(15),
-                  right: isOreintation ? vh(40) : vh(15),
-                },
-              ]}>
-              <Image
-                style={styles.fullScreenImageStyle}
-                source={localeImage.fullScreen}
-              />
-            </TouchableOpacity>
-          </>
+          <RnVideoControls
+            maximumValue={duration}
+            currentTime={currentTime}
+            isFullscreen={isFullscreen}
+            videoDuration={getTime()}
+            onValueChange={_onValueChange}
+            onPressBackButton={_onPressBack}
+            onPressSkipForward={_skipForward}
+            onPressSkipBackward={_skipBackward}
+            handleOreinTation={handleOreinTation}
+            onPressPlayNpause={_togglePlayPaused}
+            onSlidingComplete={_onSlidingComplete}
+            PlayNPauseIcon={!paused ? localeImage.pause : localeImage.play}
+          />
         )}
       </TouchableOpacity>
       {isLoading && <LoadingIndicator />}
