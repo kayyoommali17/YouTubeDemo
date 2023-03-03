@@ -11,7 +11,7 @@ const localeImage = {
   dislike: require('../assets/images/dislike.png'),
   skipBkrwd: require('../assets/images/Page-1.png'),
   skipFrwd: require('../assets/images/Page-1_2.png'),
-  dot: require('../assets/images/black-circle.png'),
+  dot: require('../assets/images/dot.png'),
   fullScreen: require('../assets/images/fullscreen.png'),
   share: require('../assets/images/noun_Share_3304093.png'),
   favorite: require('../assets/images/noun_Heart_2553737.png'),

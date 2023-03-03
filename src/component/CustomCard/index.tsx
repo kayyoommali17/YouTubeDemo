@@ -133,6 +133,7 @@ const CustomCard = (props: Props) => {
             value={currentTime}
             maximumValue={duration}
             style={styles.seekbarStyle}
+            thumbImage={localeImage.dot}
             onValueChange={_onValueChange}
             thumbTintColor={Colors.darkRed}
             maximumTrackTintColor={Colors.grey}

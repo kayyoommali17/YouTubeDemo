@@ -66,6 +66,7 @@ const RnVideoControls = (props: Controls) => {
           minimumValue={0}
           style={styles.seekbarStyle}
           value={props?.currentTime}
+          thumbImage={localeImage.dot}
           maximumValue={props?.maximumValue}
           onValueChange={props.onValueChange}
           maximumTrackTintColor={Colors.white}

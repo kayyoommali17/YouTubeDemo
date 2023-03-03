@@ -1,5 +1,5 @@
+import {ViewToken} from 'react-native';
 import {vh} from '../../utils/dimensions';
-import React, {useEffect, useState} from 'react';
 import routesNames from '../../utils/routesNames';
 import CustomCard from '../../component/CustomCard';
 import {renderData} from '../../utils/constantData';
@@ -7,13 +7,18 @@ import {useNavigation} from '@react-navigation/native';
 import {Text, View, FlatList, StyleSheet} from 'react-native';
 import LoadingIndicator from '../../component/ActivityIndicator';
 import SkelTon from '../../component/CustomShimmer/ShimmerSkelton';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 const PAGE_SIZE = 3;
 const VideoRenderScreen = () => {
   const [page, setPage] = useState(1);
+  const flatlistRef = useRef<any>();
   const navigation = useNavigation<any>();
   const [data, setData] = useState<any>([]);
   const [shimmerLoading, setShimmerLoading] = useState(true);
+  const [foucusedIndexToPlay, setfoucusedIndexToPlay] = React.useState<
+    number | null
+  >(null);
   console.log('rerender at render screen');
 
   useEffect(() => {
@@ -34,6 +39,12 @@ const VideoRenderScreen = () => {
     }, 1000);
   };
 
+  React.useEffect(() => {
+    setTimeout(() => {
+      setfoucusedIndexToPlay(0);
+    }, 5000);
+  }, []);
+
   const shouldShowLoader = renderData.length > page * PAGE_SIZE;
 
   /**
@@ -41,17 +52,21 @@ const VideoRenderScreen = () => {
    * @_renderItem component
    * @returns all the Customcard
    */
-  const _renderItem = ({item}: any) => {
+  const _renderItem = ({item, index}: any) => {
+    const onPress = () => {
+      navigation.navigate(routesNames.videoPlayer, {
+        renderdata: item,
+      });
+    };
     return (
       <CustomCard
-        onPress={() => {
-          navigation.navigate(routesNames.videoPlayer, {
-            renderdata: item,
-          });
-        }}
+        onPress={onPress}
+        currentIndex={index}
         videoTitle={item?.title}
         source={{uri: item?.thumb}}
         channelName={item?.channelName}
+        videoSource={{uri: item?.sources}}
+        foucusedIndexToPlay={foucusedIndexToPlay}
       />
     );
   };
@@ -75,22 +90,38 @@ const VideoRenderScreen = () => {
     }
   };
 
+  const viewabilityConfig = {
+    waitForInteraction: true,
+    viewAreaCoveragePercentThreshold: 50,
+  };
+
+  const onViewableItemsChanged = useCallback(
+    ({viewableItems}: {viewableItems: Array<ViewToken>}) => {
+      setTimeout(() => {
+        setfoucusedIndexToPlay(viewableItems[0]?.index);
+      }, 1000);
+    },
+    [],
+  );
+
+  const viewabilityConfigCallbackPairs = React.useRef([
+    {viewabilityConfig, onViewableItemsChanged},
+  ]);
+
   /**
    * @renderFooter Component
    * @returns loder to pagination
    */
   const renderFooter = () => {
-    return (
-      <View style={styles.loaderContainer}>
-        <LoadingIndicator />
-      </View>
-    );
+    return <LoadingIndicator />;
   };
 
   return (
     <View style={styles.mainContainerStyle}>
       <FlatList
+        ref={flatlistRef}
         renderItem={_renderItem}
+        maxToRenderPerBatch={3}
         style={{marginBottom: 20}}
         onEndReachedThreshold={0.1}
         onEndReached={fetchMoreData}
@@ -100,6 +131,7 @@ const VideoRenderScreen = () => {
         contentContainerStyle={{paddingBottom: 20}}
         data={data.slice(0, (page + 1) * PAGE_SIZE)}
         ListFooterComponent={shouldShowLoader ? renderFooter : null}
+        viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs?.current}
       />
     </View>
   );
@@ -118,10 +150,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emptyText: {
-    fontSize: vh(20),
+    fontSize: 20,
     fontWeight: 'bold',
   },
   loaderContainer: {
-    marginTop: vh(20),
+    paddingVertical: 20,
+    borderTopWidth: 1,
+    borderColor: '#CED0CE',
   },
 });
