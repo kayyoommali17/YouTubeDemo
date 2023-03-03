@@ -6,45 +6,150 @@ import {
   ViewStyle,
   ImageStyle,
   StyleProp,
-  StyleSheet,
   TouchableOpacity,
   ImageSourcePropType,
   GestureResponderEvent,
 } from 'react-native';
-import React from 'react';
-import Colors from '../../themes/colors';
+import React, {useCallback, useState} from 'react';
+import {styles} from './style';
 import {hitSlop} from '../../utils/constant';
 import localeImage from '../../utils/localeInImage';
-import {DESIGN_WIDTH, vh, vw} from '../../utils/dimensions';
+import {useIsFocused} from '@react-navigation/native';
+import Video, {OnProgressData} from 'react-native-video';
+import TouchImage from '../TouchImage';
+import Slider from '@react-native-community/slider';
+import Colors from '../../themes/colors';
 interface Props {
   thumb?: any;
-  channelName?: string;
+  duration?: string;
+  totalViews?: string;
   videoTitle?: string;
+  channelName?: string;
+  uplodedTime?: string;
   source: ImageSourcePropType;
   titleStyle?: StyleProp<TextStyle>;
   cardViewStyle?: StyleProp<ViewStyle>;
   cardImageeStyle?: StyleProp<ImageStyle>;
   onPress?: ((event: GestureResponderEvent) => void) | undefined;
+  foucusedIndexToPlay?: any;
+  currentIndex?: number;
+  videoSource?: any;
 }
 const CustomCard = (props: Props) => {
+  const isFocused = useIsFocused();
+  const autoVideoPlayRef = React.createRef<any>();
+  const [muteUnmute, setMuteUnmute] = useState(true);
+  const [currentTime, setcurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  React.useEffect(() => {
+    isFocused && autoVideoPlayRef?.current?.seek(0);
+  }, [isFocused]);
+
+  /**
+   * @_onValueChange Function
+   * @description to seek video using seekbar
+   */
+  const _onValueChange = (value: number) => {
+    console.log('onvluechange');
+
+    autoVideoPlayRef?.current?.seek(value);
+    // setPaused(false);
+  };
+
+  /**
+   * @_onSlidingComplete function
+   * @description setting current time onsliding sekkbar
+   */
+  const _onSlidingComplete = useCallback(
+    (value: any) => {
+      value = Array.isArray(value) ? value[0] : value;
+      setcurrentTime(value);
+      autoVideoPlayRef?.current?.seek(value);
+    },
+    [currentTime],
+  );
+
+  /**
+   * @_onLoad function
+   * @description seting duration
+   */
+  const _onLoad = useCallback(
+    (obj: any) => {
+      // setIsLoading(false);
+      setDuration(obj.duration);
+    },
+    [duration],
+  );
+
+  const conditionONVideo =
+    props?.foucusedIndexToPlay === props?.currentIndex && props.videoSource;
+
+  /**
+   * @_onProgress Function
+   * @description setting current time
+   */
+  const _onProgress = useCallback((value: OnProgressData) => {
+    setcurrentTime(value.currentTime);
+  }, []);
+
   return (
     <TouchableOpacity
       activeOpacity={0.7}
       onPress={props?.onPress}
       hitSlop={hitSlop}
       style={[styles.cardTouchStyle, props?.cardViewStyle]}>
-      <Image
-        style={[styles.cardImageStyle, props?.cardImageeStyle]}
-        source={props?.source || localeImage.happyWomen}
-      />
-      <Image style={styles.PalyIconStyle} source={localeImage.play} />
-      <Text style={styles.durationTextStyle}>{'5:50'}</Text>
+      {conditionONVideo && (
+        <TouchImage
+          onPress={() => {
+            setMuteUnmute(!muteUnmute);
+          }}
+          touchableStyle={styles.muteUnmuteTouchStyle}
+          imageStyle={styles.muteUnmuteIconStyle}
+          source={muteUnmute ? localeImage.mute : localeImage.unmute}
+        />
+      )}
+      <View style={styles.viewHoverPlay}>
+        {conditionONVideo && (
+          <Video
+            muted={muteUnmute}
+            ref={autoVideoPlayRef}
+            resizeMode={'contain'}
+            onLoad={_onLoad}
+            onProgress={_onProgress}
+            source={props?.videoSource}
+            style={styles.videoOnHovePlay}
+          />
+        )}
+        <Image
+          style={[styles.cardImageStyle, props?.cardImageeStyle]}
+          source={props?.source || localeImage.happyWomen}
+        />
+        {conditionONVideo && (
+          <Slider
+            step={1}
+            tapToSeek={true}
+            minimumValue={0}
+            value={currentTime}
+            maximumValue={duration}
+            style={styles.seekbarStyle}
+            onValueChange={_onValueChange}
+            thumbTintColor={Colors.darkRed}
+            maximumTrackTintColor={Colors.grey}
+            minimumTrackTintColor={Colors.darkRed}
+            onSlidingComplete={_onSlidingComplete}
+          />
+        )}
+        <Image style={styles.PalyIconStyle} source={localeImage.play} />
+        <Text style={styles.durationTextStyle}>{props.duration || '5:50'}</Text>
+      </View>
+
       <Text style={[styles.videoTitleStyle, props?.titleStyle]}>
         {props?.videoTitle || 'How to make yourself happy?'}
       </Text>
       <Text style={styles.metaInfoStyle}>
-        {'94k views'}
-        {'. 3 days ago'}
+        {props.totalViews || '94k views'}
+        {props.uplodedTime || ' . 3 days ago'}
       </Text>
       <View style={styles.channelInfoViewStyle}>
         <Image
@@ -60,75 +165,3 @@ const CustomCard = (props: Props) => {
 };
 
 export default React.memo(CustomCard);
-
-const styles = StyleSheet.create({
-  cardTouchStyle: {
-    marginVertical: vh(10),
-    marginHorizontal: vw(20),
-    borderRadius: vh(10),
-    backgroundColor: Colors.white,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 8.3,
-    elevation: 13,
-  },
-  cardImageStyle: {
-    borderTopLeftRadius: vh(10),
-    borderTopRightRadius: vh(10),
-    height: vw(180),
-    width: '100%',
-    resizeMode: 'cover',
-  },
-  videoTitleStyle: {
-    fontSize: vh(16),
-    color: Colors.black,
-    marginVertical: vh(10),
-    marginHorizontal: vw(15),
-    fontFamily: 'Poppins-SemiBold',
-  },
-  channelInfoViewStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: vw(15),
-    marginVertical: vh(10),
-  },
-  channelLogoStyle: {
-    height: vw(30),
-    width: vw(30),
-    resizeMode: 'cover',
-    borderRadius: vh(15),
-  },
-  channelNameTextStyle: {
-    opacity: 0.7,
-    marginLeft: vw(10),
-    color: Colors.black,
-    fontSize: vh(16),
-    fontFamily: 'Poppins-Medium',
-  },
-  metaInfoStyle: {
-    opacity: 0.6,
-    color: Colors.black,
-    fontSize: vh(15),
-    marginHorizontal: vw(15),
-    fontFamily: 'Poppins-Medium',
-  },
-  durationTextStyle: {
-    right: vw(10),
-    bottom: vh(120),
-    fontWeight: 'bold',
-    position: 'absolute',
-    color: Colors.white,
-  },
-  PalyIconStyle: {
-    height: vw(30),
-    width: vw(30),
-    top: vh(80),
-    position: 'absolute',
-    resizeMode: 'contain',
-    left: DESIGN_WIDTH / 2 - 40,
-  },
-});

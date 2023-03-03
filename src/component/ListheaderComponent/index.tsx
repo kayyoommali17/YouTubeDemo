@@ -1,19 +1,24 @@
+import {styles} from './style';
 import React, {useState} from 'react';
 import Share from 'react-native-share';
 import Colors from '../../themes/colors';
 import {hitSlop} from '../../utils/constant';
-import {vh, vw} from '../../utils/dimensions';
+import {metaData} from '../../utils/constantData';
 import localeImage from '../../utils/localeInImage';
 import {localeString} from '../../utils/localString';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {metaData} from '../../utils/constantData';
-
-const ListHeaderComponent = ({details}: any) => {
+import {Image, Text, TouchableOpacity, View} from 'react-native';
+interface Props {
+  details?: any;
+  totalViews?: string;
+}
+const ListHeaderComponent = (props: Props) => {
   const [showMore, setShowMore] = useState(true);
   const [subsCribition, setsubsCribition] = useState({
     isTrue: true,
     vlaue: localeString.subs,
   });
+
+  console.log('url', props.details.sources);
 
   /**
    * @CustomShare Function
@@ -22,6 +27,7 @@ const ListHeaderComponent = ({details}: any) => {
   const CustomShare = async () => {
     const myCustomShare = {
       message: 'This is test message',
+      url: props.details.sources,
     };
     try {
       const ShareResponse = await Share.open(myCustomShare)
@@ -77,14 +83,16 @@ const ListHeaderComponent = ({details}: any) => {
   };
   return (
     <View style={styles.mainContainerStyleX}>
-      {<Text style={styles.videoTitleStyle}>{details?.subtitle}</Text>}
-      <Text style={styles.metaInfoStyle}>{localeString.views}</Text>
-      <Text numberOfLines={showMore ? 2 : undefined} style={styles.description}>
-        {details?.description}
+      <Text style={styles.videoTitleStyle}>{props?.details?.subtitle}</Text>
+      <Text style={styles.metaInfoStyle}>
+        {props.totalViews || localeString.views}
       </Text>
-      {details?.description.length > 100 && (
+      <Text numberOfLines={showMore ? 2 : undefined} style={styles.description}>
+        {props?.details?.description}
+      </Text>
+      {props?.details?.description.length > 100 && (
         <Text
-          style={{color: Colors.grey}}
+          style={{color: Colors.grey, width: 70}}
           onPress={() => setShowMore(!showMore)}>
           {showMore ? 'see more' : 'see less'}
         </Text>
@@ -98,11 +106,11 @@ const ListHeaderComponent = ({details}: any) => {
           <Image
             resizeMode="cover"
             style={styles.channelImageSTyle}
-            source={{uri: details?.thumb}}
+            source={{uri: props?.details?.thumb}}
           />
           <View style={styles.textViewStyle}>
             <Text style={styles.channelNameStyle}>
-              {details?.title.slice(0, 15) + '..'}
+              {props?.details?.title.slice(0, 15) + '..'}
             </Text>
             <Text style={styles.subsTextStyle}>{localeString.totalSubs}</Text>
           </View>
@@ -157,132 +165,132 @@ const ListHeaderComponent = ({details}: any) => {
 
 export default React.memo(ListHeaderComponent);
 
-const styles = StyleSheet.create({
-  mainContainerStyle: {
-    flex: 1,
-    backgroundColor: Colors.white,
-  },
-  videoTitleStyle: {
-    fontWeight: '800',
-    color: Colors.black,
-    marginVertical: vh(10),
-  },
-  metaInfoStyle: {
-    opacity: 0.7,
-    color: Colors.black,
-    marginBottom: vh(10),
-  },
-  description: {
-    textAlign: 'justify',
-  },
-  listContainer: {
-    marginTop: vh(20),
-    flexDirection: 'row',
-    flex: 1,
-  },
-  itemContainer: {
-    alignItems: 'center',
-    paddingHorizontal: vw(10),
-    flex: 1,
-  },
-  itemText: {
-    fontSize: vh(12),
-    marginTop: vh(10),
-  },
-  mainSubsViewStyle: {
-    borderTopWidth: 1,
-    marginTop: vh(30),
-    alignItems: 'center',
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    paddingVertical: vh(15),
-    paddingHorizontal: vw(15),
-    marginHorizontal: vw(-20),
-    borderColor: Colors.lightGrey,
-    justifyContent: 'space-between',
-  },
-  channelDetailsViewStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  channelImageSTyle: {
-    height: vw(50),
-    width: vw(50),
-    borderRadius: vw(50),
-  },
-  channelNameStyle: {
-    fontWeight: 'bold',
-    color: Colors.black,
-    fontSize: vh(16),
-  },
-  textViewStyle: {
-    marginLeft: vw(10),
-  },
-  subsTextStyle: {
-    marginTop: vh(5),
-    fontSize: vh(14),
-  },
-  subsButtonStyle: {
-    backgroundColor: Colors.tabColor,
-    paddingHorizontal: vw(30),
-    paddingVertical: vh(8),
-    borderRadius: vw(20),
-    maxWidth: vw(150),
-    alignItems: 'center',
-  },
-  renderButtonImageStyle: {
-    height: vw(20),
-    width: vw(20),
-    resizeMode: 'contain',
-  },
-  subsButtonTextStyle: {
-    color: Colors.white,
-    fontWeight: 'bold',
-  },
-  commentImageStyle: {
-    height: vw(20),
-    width: vw(20),
-    resizeMode: 'cover',
-    borderRadius: vw(10),
-  },
-  commentMainViewStyle: {
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.lightGrey,
-    paddingVertical: vh(10),
-    paddingHorizontal: vw(15),
-    marginHorizontal: vw(-20),
-  },
-  commentInnerViewStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  commentsTotalStyle: {
-    flexDirection: 'row',
-  },
-  commentTextStyle: {
-    fontWeight: 'bold',
-    color: Colors.black,
-  },
-  commenntNumberStyle: {
-    marginLeft: vw(10),
-  },
-  userCommentViewStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    maxWidth: vw(290),
-    marginVertical: vh(10),
-  },
-  userCommentStyle: {
-    marginLeft: vw(10),
-    fontSize: vh(12),
-  },
-  smillarVideoTextStyle: {
-    marginLeft: vw(20),
-    marginTop: vh(15),
-    fontWeight: 'bold',
-  },
-  mainContainerStyleX: {
-    marginHorizontal: vw(20),
-  },
-});
+// const styles = StyleSheet.create({
+//   mainContainerStyle: {
+//     flex: 1,
+//     backgroundColor: Colors.white,
+//   },
+//   videoTitleStyle: {
+//     fontWeight: '800',
+//     color: Colors.black,
+//     marginVertical: vh(10),
+//   },
+//   metaInfoStyle: {
+//     opacity: 0.7,
+//     color: Colors.black,
+//     marginBottom: vh(10),
+//   },
+//   description: {
+//     textAlign: 'justify',
+//   },
+//   listContainer: {
+//     marginTop: vh(20),
+//     flexDirection: 'row',
+//     flex: 1,
+//   },
+//   itemContainer: {
+//     alignItems: 'center',
+//     paddingHorizontal: vw(10),
+//     flex: 1,
+//   },
+//   itemText: {
+//     fontSize: vh(12),
+//     marginTop: vh(10),
+//   },
+//   mainSubsViewStyle: {
+//     borderTopWidth: 1,
+//     marginTop: vh(30),
+//     alignItems: 'center',
+//     flexDirection: 'row',
+//     borderBottomWidth: 1,
+//     paddingVertical: vh(15),
+//     paddingHorizontal: vw(15),
+//     marginHorizontal: vw(-20),
+//     borderColor: Colors.lightGrey,
+//     justifyContent: 'space-between',
+//   },
+//   channelDetailsViewStyle: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+//   channelImageSTyle: {
+//     height: vw(50),
+//     width: vw(50),
+//     borderRadius: vw(50),
+//   },
+//   channelNameStyle: {
+//     fontWeight: 'bold',
+//     color: Colors.black,
+//     fontSize: vh(16),
+//   },
+//   textViewStyle: {
+//     marginLeft: vw(10),
+//   },
+//   subsTextStyle: {
+//     marginTop: vh(5),
+//     fontSize: vh(14),
+//     opacity: 0.7,
+//   },
+//   subsButtonStyle: {
+//     backgroundColor: Colors.tabColor,
+//     paddingHorizontal: vw(30),
+//     paddingVertical: vh(8),
+//     borderRadius: vw(20),
+//     maxWidth: vw(150),
+//     alignItems: 'center',
+//   },
+//   renderButtonImageStyle: {
+//     height: vw(20),
+//     width: vw(20),
+//     resizeMode: 'contain',
+//   },
+//   subsButtonTextStyle: {
+//     color: Colors.white,
+//     fontWeight: 'bold',
+//   },
+//   commentImageStyle: {
+//     height: vw(20),
+//     width: vw(20),
+//     resizeMode: 'cover',
+//     borderRadius: vw(10),
+//   },
+//   commentMainViewStyle: {
+//     borderBottomWidth: 1,
+//     borderBottomColor: Colors.lightGrey,
+//     paddingVertical: vh(10),
+//     paddingHorizontal: vw(15),
+//     marginHorizontal: vw(-20),
+//   },
+//   commentInnerViewStyle: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     justifyContent: 'space-between',
+//   },
+//   commentsTotalStyle: {
+//     flexDirection: 'row',
+//   },
+//   commentTextStyle: {
+//     fontWeight: 'bold',
+//     color: Colors.black,
+//   },
+//   commenntNumberStyle: {
+//     marginLeft: vw(10),
+//   },
+//   userCommentViewStyle: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     maxWidth: vw(290),
+//     marginVertical: vh(10),
+//   },
+//   userCommentStyle: {
+//     marginLeft: vw(10),
+//     fontSize: vh(12),
+//   },
+//   smillarVideoTextStyle: {
+//     marginTop: vh(15),
+//     fontWeight: 'bold',
+//   },
+//   mainContainerStyleX: {
+//     marginHorizontal: vw(20),
+//   },
+// });
